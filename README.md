@@ -131,16 +131,3 @@ We welcome contributions to enhance the FCDS Platform:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE.md).
-
-## 📞 Contact
-
-Project Maintainer: [Your Name] - [your.email@example.com]
-
----
-
-<div align="center">
-  <p>© 2025 Faculty of Computer and Data Science. All Rights Reserved.</p>
-</div>
