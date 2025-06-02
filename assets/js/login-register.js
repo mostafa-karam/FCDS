@@ -467,7 +467,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         } else if (email === 'doctor@fcds.edu') {
                             // redirectUrl = 'Doctor/doctor-dashboard.html';
                             redirectUrl = 'comingsoonhome.html';
-                        } else if (email === 'doctor-assistant@fcds.edu') {
+                        } else if (email === 'assistant@fcds.edu') {
                             // redirectUrl = 'Doctor-assistant/assistant-dashboard.html';
                             redirectUrl = 'comingsoonhome.html';
                         } else if (email === 'staff@fcds.edu') {
