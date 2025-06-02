@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - FCDS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="stylesheet" href="../../css/tailwind-custom.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 1rem;
+            box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.04);
+        }
+
+        .bg-white {
+            background-color: #f9fafb !important;
+        }
+
+        .shadow {
+            box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.03), 0 1.5px 4px 0 rgba(0, 0, 0, 0.02) !important;
+        }
+
+        .border-gray-200 {
+            border-color: #e5e7eb !important;
+        }
+
+        .active-tab {
+            background: linear-gradient(90deg, #e0e7ff 0%, #f1f5ff 100%);
+            border-radius: 0.5rem 0.5rem 0 0;
+            box-shadow: 0 2px 8px 0 rgba(99, 102, 241, 0.08);
+        }
+
+        .tab-link {
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .tab-link:hover {
+            background: #f1f5ff;
+            color: #3730a3 !important;
+        }
+
+        input,
+        select,
+        textarea {
+            background: #f8fafc !important;
+        }
+
+        .modal-bg {
+            background: rgba(243, 244, 246, 0.95) !important;
+        }
+
+        .table-striped tbody tr:nth-child(even) {
+            background-color: #f3f4f6;
+        }
+
+        .rounded-lg {
+            border-radius: 1rem !important;
+        }
+
+        .rounded-md {
+            border-radius: 0.5rem !important;
+        }
+
+        /* User management specific styles */
+        .user-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .user-table th {
+            background: #f8fafc;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .user-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .user-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-pending {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+    </style>
+</head>
+
+<body class="bg-white text-gray-900 antialiased min-h-screen flex flex-col">
+    2025
+
+    <!-- Main Content -->
+    <div class="main-content p-4 sm:p-6 lg:p-8 ml-0 md:ml-64 transition-all duration-300 mt-16">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-900">User Management</h1>
+            <div class="flex space-x-4">
+                <button id="exportUsers" class="btn-secondary">
+                    <i class="fas fa-download mr-2"></i> Export Users
+                </button>
+                <button id="addUser" class="btn-primary">
+                    <i class="fas fa-user-plus mr-2"></i> Add New User
+                </button>
+            </div>
+        </div>
+
+        <!-- Management Tabs -->
+        <div class="mb-6">
+            <div class="border-b border-gray-200">
+                <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                    <a href="#" id="tab-users"
+                        class="tab-link active-tab border-primary-500 text-primary-600 whitespace-nowrap py-4 px-4 border-b-2 font-medium text-sm">
+                        Users
+                    </a>
+                    <a href="#" id="tab-roles"
+                        class="tab-link border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-4 border-b-2 font-medium text-sm">
+                        Roles & Permissions
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Search and Filter Section -->
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="relative">
+                    <input type="text" id="searchUser" placeholder="Search users..."
+                        class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+                <select id="roleFilter"
+                    class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    aria-label="Filter by role" title="Filter by role">
+                    <option value="">All Roles</option>
+                    <option value="admin">Admin</option>
+                    <option value="staff">Staff</option>
+                    <option value="student">Student</option>
+                </select>
+                <select id="statusFilter"
+                    class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    aria-label="Filter by status" title="Filter by status">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="pending">Pending</option>
+                </select>
+                <button id="applyFilters" class="btn-primary">
+                    <i class="fas fa-filter mr-2"></i> Apply Filters
+                </button>
+            </div>
+        </div>
+
+        <!-- Users Tab Content -->
+        <div id="users-tab-content">
+            <!-- Users Table -->
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Last Login</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <!-- Table content will be dynamically populated -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex justify-between items-center mt-6">
+                <div class="text-sm text-gray-600">
+                    Showing <span id="startIndex">1</span> to <span id="endIndex">10</span> of <span
+                        id="totalUsers">100</span> users
+                </div>
+                <div class="flex space-x-2">
+                    <button id="prevPage" class="btn-secondary" title="Previous page" aria-label="Go to previous page">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button id="nextPage" class="btn-secondary" title="Next page" aria-label="Go to next page">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Roles Tab Content (Hidden by Default) -->
+        <div id="roles-tab-content" class="hidden">
+            <div class="bg-white rounded-lg shadow p-4 border border-gray-200 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-900">System Roles</h2>
+                    <button id="add-role-btn"
+                        class="px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-white rounded-md text-sm font-medium flex items-center shadow">
+                        <i class="fas fa-plus mr-2"></i> Add New Role
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 table-striped">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                </th>
+                                Role Name
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Description
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Users
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Access Level
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">Administrator</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-500">Full system access with all privileges</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">2</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                        Highest
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <div class="flex space-x-2">
+                                        <button class="text-indigo-600 hover:text-indigo-900" title="Edit Role">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-green-600 hover:text-green-900" title="View Permissions">
+                                            <i class="fas fa-shield-alt"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">Doctor</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-500">Teaching staff with course management access
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">24</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
+                                        High
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <div class="flex space-x-2">
+                                        <button class="text-indigo-600 hover:text-indigo-900" title="Edit Role">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-green-600 hover:text-green-900" title="View Permissions">
+                                            <i class="fas fa-shield-alt"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">Doctor Assistant</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-500">Support staff for doctors with limited access
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">18</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                                        Medium
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <div class="flex space-x-2">
+                                        <button class="text-indigo-600 hover:text-indigo-900" title="Edit Role">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-green-600 hover:text-green-900" title="View Permissions">
+                                            <i class="fas fa-shield-alt"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">Staff</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-500">Administrative staff with department-specific
+                                        access</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">42</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                        Medium
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <div class="flex space-x-2">
+                                        <button class="text-indigo-600 hover:text-indigo-900" title="Edit Role">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-green-600 hover:text-green-900" title="View Permissions">
+                                            <i class="fas fa-shield-alt"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">Student</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-500">Student access for courses and learning materials
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">3,248</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        Basic
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <div class="flex space-x-2">
+                                        <button class="text-indigo-600 hover:text-indigo-900" title="Edit Role">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-green-600 hover:text-green-900" title="View Permissions">
+                                            <i class="fas fa-shield-alt"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal (Hidden by default) -->
+    <div id="add-user-modal" class="fixed inset-0 modal-bg flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg max-w-md w-full mx-4 shadow-xl">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium text-gray-900">Add New User</h3>
+                    <button id="close-modal" type="button" class="text-gray-400 hover:text-gray-500"
+                        aria-label="Close modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="add-user-form">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="fullname" class="block text-sm font-medium text-gray-700">Full Name</label>
+                            <input type="text" id="fullname" name="fullname"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                            <input type="email" id="email" name="email"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+                            <select id="role" name="role"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                                <option value="doctor">Doctor</option>
+                                <option value="doctor-assistant">Doctor Assistant</option>
+                                <option value="staff">Staff</option>
+                                <option value="student">Student</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="department" class="block text-sm font-medium text-gray-700">Department</label>
+                            <select id="department" name="department"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                                <option value="computer-science">Computer Science</option>
+                                <option value="data-science">Data Science</option>
+                                <option value="artificial-intelligence">Artificial Intelligence</option>
+                                <option value="library">Library</option>
+                                <option value="administration">Administration</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                            <select id="status" name="status"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="photo" class="block text-sm font-medium text-gray-700">Profile Photo</label>
+                            <div class="mt-1 flex items-center">
+                                <span class="h-12 w-12 rounded-full overflow-hidden bg-gray-100 border border-gray-300">
+                                    <i
+                                        class="fas fa-user text-gray-300 flex items-center justify-center h-full w-full text-2xl"></i>
+                                </span>
+                                <button type="button"
+                                    class="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                                    Upload
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end space-x-3">
+                        <button type="button" id="cancel-add-user"
+                            class="py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                            Add User
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Role Modal -->
+    <div id="add-role-modal" class="hidden fixed inset-0 modal-bg overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Add New Role</h3>
+                <button id="close-add-role-modal" class="text-gray-400 hover:text-gray-500" aria-label="Close modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="add-role-form">
+                <div class="mb-4">
+                    <label for="role-name" class="block text-sm font-medium text-gray-700">Role Name</label>
+                    <input type="text" id="role-name" name="role-name"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                        placeholder="Enter role name">
+                </div>
+                <div class="mb-4">
+                    <label for="role-description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea id="role-description" name="role-description" rows="3"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                        placeholder="Enter role description"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="access-level" class="block text-sm font-medium text-gray-700">Access Level</label>
+                    <select id="access-level" name="access-level"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                        <option value="basic">Basic</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                        <option value="highest">Highest</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="cancel-add-role"
+                        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-md text-sm font-medium">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md text-sm font-medium">
+                        Create Role
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Page Specific Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Load sidebar
+            fetch('../../components/sidebar-navigation.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('sidebar-container').innerHTML = html;
+                    // Initialize sidebar after loading
+                    if (typeof setupSidebar === 'function') {
+                        setupSidebar();
+                    }
+                    // Set active navigation item
+                    const currentRole = 'doctor';
+                    document.querySelectorAll(`[data-role="${currentRole}"]`).forEach(el => {
+                        el.classList.remove('hidden');
+                    });
+                });
+
+            // Load header
+            fetch('../../components/header.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('header-container').innerHTML = html;
+                });
+
+            // Modal Controls
+            const addUserModal = document.getElementById('add-user-modal');
+            const addUserBtn = document.getElementById('addUser');
+            const closeModalBtn = document.getElementById('close-modal');
+            const cancelAddUserBtn = document.getElementById('cancel-add-user');
+
+            // Open modal
+            addUserBtn.addEventListener('click', function () {
+                addUserModal.classList.remove('hidden');
+            });
+
+            // Close modal
+            function closeModal() {
+                addUserModal.classList.add('hidden');
+            }
+
+            closeModalBtn.addEventListener('click', closeModal);
+            cancelAddUserBtn.addEventListener('click', closeModal);
+
+            // Close modal when clicking outside
+            addUserModal.addEventListener('click', function (e) {
+                if (e.target === addUserModal) {
+                    closeModal();
+                }
+            });
+
+            // Form submission
+            const addUserForm = document.getElementById('add-user-form');
+            addUserForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                // Add user logic would go here
+                alert('User added successfully!');
+                closeModal();
+            });
+
+            // Tab switching functionality
+            const tabUsers = document.getElementById('tab-users');
+            const tabRoles = document.getElementById('tab-roles');
+            const usersTabContent = document.getElementById('users-tab-content');
+            const rolesTabContent = document.getElementById('roles-tab-content');
+
+            tabUsers.addEventListener('click', function (e) {
+                e.preventDefault();
+                tabUsers.classList.add('active-tab', 'border-primary-500', 'text-primary-600');
+                tabUsers.classList.remove('border-transparent', 'text-gray-500');
+                tabRoles.classList.remove('active-tab', 'border-primary-500', 'text-primary-600');
+                tabRoles.classList.add('border-transparent', 'text-gray-500');
+                usersTabContent.classList.remove('hidden');
+                rolesTabContent.classList.add('hidden');
+            });
+
+            tabRoles.addEventListener('click', function (e) {
+                e.preventDefault();
+                tabRoles.classList.add('active-tab', 'border-primary-500', 'text-primary-600');
+                tabRoles.classList.remove('border-transparent', 'text-gray-500');
+                tabUsers.classList.remove('active-tab', 'border-primary-500', 'text-primary-600');
+                tabUsers.classList.add('border-transparent', 'text-gray-500');
+                rolesTabContent.classList.remove('hidden');
+                usersTabContent.classList.add('hidden');
+            });
+
+            // Manage roles button
+            document.getElementById('manage-roles-btn').addEventListener('click', function () {
+                tabRoles.click();
+            });
+
+            // Add role modal functionality
+            const addRoleModal = document.getElementById('add-role-modal');
+            const addRoleBtn = document.getElementById('add-role-btn');
+            const closeAddRoleModal = document.getElementById('close-add-role-modal');
+            const cancelAddRole = document.getElementById('cancel-add-role');
+
+            addRoleBtn.addEventListener('click', function () {
+                addRoleModal.classList.remove('hidden');
+            });
+
+            closeAddRoleModal.addEventListener('click', function () {
+                addRoleModal.classList.add('hidden');
+            });
+
+            cancelAddRole.addEventListener('click', function () {
+                addRoleModal.classList.add('hidden');
+            });
+
+            // Form submission (would send data to backend in real implementation)
+            document.getElementById('add-role-form').addEventListener('submit', function (e) {
+                e.preventDefault();
+                // Show success message (would actually create role in real implementation)
+                alert('Role created successfully!');
+                addRoleModal.classList.add('hidden');
+            });
+
+            // User management functionality
+            let currentPage = 1;
+            const usersPerPage = 10;
+
+            // Load users with pagination
+            async function loadUsers(page = 1) {
+                try {
+                    const response = await fetch(`/api/users?page=${page}&limit=${usersPerPage}`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                        }
+                    });
+
+                    if (!response.ok) throw new Error('Failed to fetch users');
+
+                    const data = await response.json();
+                    renderUsers(data.users);
+                    updatePagination(data.total);
+                } catch (error) {
+                    console.error('Error loading users:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to load users. Please try again.'
+                    });
+                }
+            }
+
+            // Render users in table
+            function renderUsers(users) {
+                const tbody = document.getElementById('usersTableBody');
+                tbody.innerHTML = users.map(user => `
+                    <tr>
+                        <td>
+                            <div class="flex items-center">
+                                <img src="${user.avatar || 'assets/img/default-avatar.png'}" 
+                                     alt="${user.name}" 
+                                     class="w-10 h-10 rounded-full mr-3">
+                                <div>
+                                    <div class="font-medium text-gray-900">${user.name}</div>
+                                    <div class="text-sm text-gray-500">${user.email}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${user.role}</td>
+                        <td>
+                            <span class="status-badge status-${user.status.toLowerCase()}">
+                                ${user.status}
+                            </span>
+                        </td>
+                        <td>${new Date(user.lastLogin).toLocaleDateString()}</td>
+                        <td>
+                            <div class="flex space-x-2">
+                                <button onclick="editUser('${user.id}')" class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="viewUserDetails('${user.id}')" class="text-green-600 hover:text-green-800">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button onclick="deleteUser('${user.id}')" class="text-red-600 hover:text-red-800">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            // Update pagination
+            function updatePagination(total) {
+                const startIndex = (currentPage - 1) * usersPerPage + 1;
+                const endIndex = Math.min(startIndex + usersPerPage - 1, total);
+
+                document.getElementById('startIndex').textContent = startIndex;
+                document.getElementById('endIndex').textContent = endIndex;
+                document.getElementById('totalUsers').textContent = total;
+
+                document.getElementById('prevPage').disabled = currentPage === 1;
+                document.getElementById('nextPage').disabled = endIndex >= total;
+            }
+
+            // Event listeners
+            document.getElementById('prevPage').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadUsers(currentPage);
+                }
+            });
+
+            document.getElementById('nextPage').addEventListener('click', () => {
+                currentPage++;
+                loadUsers(currentPage);
+            });
+
+            document.getElementById('searchUser').addEventListener('input', debounce((e) => {
+                // Implement search functionality
+            }, 300));
+
+            document.getElementById('applyFilters').addEventListener('click', () => {
+                // Implement filter functionality
+            });
+
+            // Utility functions
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+
+            // Initialize
+            document.addEventListener('DOMContentLoaded', () => {
+                loadUsers();
+            });
+        });
+    </script>
+</body>
+
+</html>

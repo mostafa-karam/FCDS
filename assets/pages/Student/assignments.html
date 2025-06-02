@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignments - FCDS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        success: {
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            700: '#15803d',
+                        },
+                        warning: {
+                            100: '#fef9c3',
+                            500: '#eab308',
+                            700: '#a16207',
+                        },
+                        danger: {
+                            100: '#fee2e2',
+                            500: '#ef4444',
+                            700: '#b91c1c',
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        .sidebar-transition {
+            transition: width 0.3s ease;
+        }
+
+        .sidebar-collapsed {
+            width: 4rem !important;
+        }
+
+        .sidebar-collapsed .sidebar-content,
+        .sidebar-collapsed .sidebar-label {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar-content,
+        .sidebar-label {
+            transition: opacity 0.2s;
+        }
+
+        .sidebar-collapsed .sidebar-nav-icon {
+            margin-right: 0 !important;
+            justify-content: center;
+        }
+
+        .sidebar-collapsed .sidebar-nav-label {
+            display: none;
+        }
+
+        .glass-effect {
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s ease;
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .typing-indicator {
+            animation: typing 1.5s infinite;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .header-fixed-height {
+            height: 72px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white antialiased min-h-screen flex flex-col">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="bg-white shadow-lg sidebar-transition w-64 fixed h-full z-40 flex flex-col">
+        <div class="p-6 border-b border-gray-200 sidebar-content">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-primary-900 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-graduation-cap text-white"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-gray-800">FCDS</h2>
+                    <p class="text-xs text-gray-500" id="userRole">Student</p>
+                </div>
+            </div>
+        </div>
+        <nav class="mt-6 flex-1" id="sidebarNav">
+            <!-- Dynamic navigation will be inserted here -->
+        </nav>
+    </aside>
+    <!-- Top Navbar -->
+    <header id="mainHeader"
+        class="bg-white shadow-sm border-b border-gray-200 px-6 py-4 fixed left-0 right-0 top-0 z-30 ml-64 transition-all duration-300 flex items-center justify-between header-fixed-height">
+        <div class="flex items-center space-x-4">
+            <button id="sidebarToggle"
+                class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                aria-label="Toggle sidebar" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="text-2xl font-bold text-gray-800" id="pageTitle">Assignments</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+            <!-- Search -->
+            <div class="relative hidden md:block">
+                <input type="text" placeholder="Search..."
+                    class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 bg-gray-100 text-gray-800"
+                    aria-label="Search">
+                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+            <!-- Notifications -->
+            <button class="relative p-2 text-gray-500 hover:bg-gray-100 rounded-lg" aria-label="Notifications">
+                <i class="fas fa-bell"></i>
+                <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+            <!-- User Menu -->
+            <div class="relative">
+                <button id="userMenuToggle"
+                    class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 focus:outline-none"
+                    onclick="toggleUserMenu()">
+                    <div class="w-8 h-8 bg-primary-900 rounded-full flex items-center justify-center">
+                        <span class="text-white text-sm font-medium" id="userInitials">SW</span>
+                    </div>
+                    <span class="hidden md:block text-sm font-medium text-gray-700" id="userName">Sophia Wilson</span>
+                    <i class="fas fa-chevron-down text-xs"></i>
+                </button>
+                <div id="userMenu"
+                    class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden">
+                    <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                    <hr class="border-gray-200">
+                    <button id="logoutBtn"
+                        class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                        onclick="handleLogout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="p-6 ml-64 pt-24 transition-all duration-300" id="mainContentWrapper">
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-gray-900 mb-2">Assignments</h1>
+            <p class="text-gray-600">Manage your assignments and submissions</p>
+        </div>
+
+        <!-- Filters & Actions -->
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6 space-y-4 md:space-y-0">
+            <!-- Filters -->
+            <div class="flex flex-wrap items-center gap-2">
+                <select id="course-filter"
+                    class="rounded-md border-gray-300 text-gray-700 bg-white py-2 px-3 text-sm focus:border-primary-500 focus:ring-primary-500"
+                    aria-label="Filter by course" title="Filter by course">
+                    <option value="all">All Courses</option>
+                    <option value="CS101">CS101 - Introduction to Programming</option>
+                    <option value="DS201">DS201 - Data Structures and Algorithms</option>
+                    <option value="AI301">AI301 - Machine Learning Fundamentals</option>
+                    <option value="DB401">DB401 - Database Systems</option>
+                </select>
+                <select id="status-filter"
+                    class="rounded-md border-gray-300 text-gray-700 bg-white py-2 px-3 text-sm focus:border-primary-500 focus:ring-primary-500"
+                    aria-label="Filter by status" title="Filter by status">
+                    <option value="all">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="submitted">Submitted</option>
+                    <option value="graded">Graded</option>
+                    <option value="overdue">Overdue</option>
+                </select>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center space-x-2">
+                <div class="relative">
+                    <input type="text" placeholder="Search assignments..."
+                        class="rounded-md border-gray-300 bg-white text-gray-900 shadow-sm focus:border-primary-500 focus:ring-primary-500 pl-10 pr-4 py-2 text-sm w-full">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                </div>
+                <button
+                    class="flex items-center px-3 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md text-sm font-medium"
+                    title="Calendar view">
+                    <i class="fas fa-calendar-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Assignment Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <!-- Pending -->
+            <div class="bg-white rounded-lg shadow p-4 border border-gray-200">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-warning-100 text-warning-600 mr-4">
+                        <i class="fas fa-hourglass-half"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Pending</p>
+                        <p class="text-xl font-semibold text-gray-900">3</p>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm text-warning-600">
+                    <i class="fas fa-exclamation-circle mr-1"></i> 1 due tomorrow
+                </div>
+            </div>
+
+            <!-- Submitted -->
+            <div class="bg-white rounded-lg shadow p-4 border border-gray-200">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-primary-100 text-primary-600 mr-4">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Submitted</p>
+                        <p class="text-xl font-semibold text-gray-900">5</p>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm text-gray-600">
+                    Awaiting grades
+                </div>
+            </div>
+
+            <!-- Graded -->
+            <div class="bg-white rounded-lg shadow p-4 border border-gray-200">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-success-100 text-success-600 mr-4">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Graded</p>
+                        <p class="text-xl font-semibold text-gray-900">12</p>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm text-success-600">
+                    <i class="fas fa-arrow-up mr-1"></i> 88% average score
+                </div>
+            </div>
+
+            <!-- Overdue -->
+            <div class="bg-white rounded-lg shadow p-4 border border-gray-200">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-danger-100 text-danger-600 mr-4">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Overdue</p>
+                        <p class="text-xl font-semibold text-gray-900">0</p>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm text-success-600">
+                    <i class="fas fa-check mr-1"></i> All up to date!
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Assignments -->
+        <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden mb-6">
+            <div class="p-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900">Pending Assignments</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Assignment
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Course
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Due Date
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Status
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <!-- Assignment 1 -->
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">Data Structures Project
+                                </div>
+                                <div class="text-xs text-gray-500">Implementation of AVL Trees</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">DS201</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-danger-600 font-medium">Tomorrow, 11:59 PM
+                                </div>
+                                <div class="text-xs text-gray-500">July 15, 2025</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-danger-100 text-danger-800">
+                                    Due Soon
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <a href="#" class="text-primary-600 hover:underline mr-3">View</a>
+                                <a href="#" class="text-success-600 hover:underline">Submit</a>
+                            </td>
+                        </tr>
+                        <!-- Assignment 2 -->
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">ML Algorithms Assignment
+                                </div>
+                                <div class="text-xs text-gray-500">Clustering techniques comparison
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">AI301</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">July 20, 2025</div>
+                                <div class="text-xs text-gray-500">11:59 PM</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-warning-100 text-warning-800">
+                                    Pending
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <a href="#" class="text-primary-600 hover:underline mr-3">View</a>
+                                <a href="#" class="text-success-600 hover:underline">Submit</a>
+                            </td>
+                        </tr>
+                        <!-- Assignment 3 -->
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">Database Design Project
+                                </div>
+                                <div class="text-xs text-gray-500">Design a university database
+                                    schema</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">DB401</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">July 25, 2025</div>
+                                <div class="text-xs text-gray-500">11:59 PM</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-warning-100 text-warning-800">
+                                    Pending
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <a href="#" class="text-primary-600 hover:underline mr-3">View</a>
+                                <a href="#" class="text-success-600 hover:underline">Submit</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Submissions & Grades -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Recent Submissions -->
+            <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+                <div class="p-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Recent Submissions</h2>
+                </div>
+                <ul class="divide-y divide-gray-200">
+                    <li class="px-4 py-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Recursion Programming
+                                    Exercise</p>
+                                <p class="text-xs text-gray-500">CS101 • Submitted Jul 10, 2025</p>
+                            </div>
+                            <span
+                                class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-primary-100 text-primary-800">
+                                Submitted
+                            </span>
+                        </div>
+                    </li>
+                    <li class="px-4 py-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Binary Search Trees
+                                    Implementation</p>
+                                <p class="text-xs text-gray-500">DS201 • Submitted Jul 5, 2025</p>
+                            </div>
+                            <span
+                                class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-success-100 text-success-800">
+                                Graded: 92%
+                            </span>
+                        </div>
+                    </li>
+                    <li class="px-4 py-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Linear Regression Analysis
+                                </p>
+                                <p class="text-xs text-gray-500">AI301 • Submitted Jul 3, 2025</p>
+                            </div>
+                            <span
+                                class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-success-100 text-success-800">
+                                Graded: 88%
+                            </span>
+                        </div>
+                    </li>
+                    <li class="px-4 py-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">SQL Query Optimization</p>
+                                <p class="text-xs text-gray-500">DB401 • Submitted Jun 28, 2025</p>
+                            </div>
+                            <span
+                                class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-success-100 text-success-800">
+                                Graded: 95%
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+                <div class="p-4 border-t border-gray-200">
+                    <a href="#" class="text-sm text-primary-600 hover:underline">View All
+                        Submissions</a>
+                </div>
+            </div>
+
+            <!-- Upload New Assignment -->
+            <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+                <div class="p-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900">Submit Assignment</h2>
+                </div>
+                <div class="p-4">
+                    <form class="space-y-4">
+                        <div>
+                            <label for="assignment-select" class="block text-sm font-medium text-gray-700 mb-1">
+                                Select Assignment
+                            </label>
+                            <select id="assignment-select"
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 bg-white text-gray-900 sm:text-sm">
+                                <option value="">-- Select Assignment --</option>
+                                <option value="ds201-project">DS201 - Data Structures Project</option>
+                                <option value="ai301-algorithms">AI301 - ML Algorithms Assignment</option>
+                                <option value="db401-design">DB401 - Database Design Project</option>
+                            </select>
+                        </div>
+
+                        <!-- File Upload Area -->
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Upload Files
+                            </label>
+                            <div
+                                class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                <div class="space-y-1 text-center">
+                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
+                                        viewBox="0 0 48 48" aria-hidden="true">
+                                        <path
+                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                    <div class="flex text-sm text-gray-600">
+                                        <label for="file-upload"
+                                            class="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none">
+                                            <span>Upload a file</span>
+                                            <input id="file-upload" name="file-upload" type="file" class="sr-only">
+                                        </label>
+                                        <p class="pl-1">or drag and drop</p>
+                                    </div>
+                                    <p class="text-xs text-gray-500">
+                                        PDF, ZIP, DOC, DOCX, JPG, PNG up to 10MB
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Comment Box -->
+                        <div>
+                            <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">
+                                Comments (Optional)
+                            </label>
+                            <textarea id="comment" rows="3"
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 bg-white text-gray-900 sm:text-sm"
+                                placeholder="Any additional notes for your submission..."></textarea>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex justify-end">
+                            <button type="submit"
+                                class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md text-sm font-medium flex items-center">
+                                <i class="fas fa-paper-plane mr-2"></i> Submit Assignment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assignment Calendar -->
+        <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                <h2 class="text-lg font-semibold text-gray-900">Assignment Schedule</h2>
+                <div class="text-sm">
+                    <span class="text-gray-600">July 2025</span>
+                </div>
+            </div>
+            <div class="p-4 overflow-x-auto">
+                <!-- Calendar visualization would go here -->
+                <div class="text-center text-sm text-gray-500 py-4"></div>
+                <p>Calendar view is currently in development.</p>
+                <p>Check back soon for a visual representation of your assignment due dates.</p>
+            </div>
+        </div>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 py-4 mt-auto">
+        <div class="container mx-auto text-center">
+            <p class="text-sm">&copy; 2025 FCDS. All rights reserved.</p>
+            <p class="text-xs">Designed with <i class="fas fa-heart text-red-500"></i> by FCDS Team</p>
+        </div>
+    </footer>
+</body>
+<!-- Page Specific Script -->
+<script>
+    // Global state management
+    const AppState = {
+        currentUser: null,
+        currentRole: null,
+        sidebarCollapsed: true,
+    };
+
+    // Role-based navigation configurations
+    const NavigationConfig = {
+        'student': [
+            { icon: 'fas fa-tachometer-alt', label: 'Dashboard', id: 'dashboard', href: 'student-db.html' },
+            { icon: 'fas fa-calendar-check', label: 'Attendance', id: 'attendance', href: 'attendance.html' },
+            { icon: 'fas fa-book', label: 'Courses', id: 'courses', href: 'courses.html' },
+            { icon: 'fas fa-credit-card', label: 'Fees & Payments', id: 'fees', href: 'fees-payments.html' },
+            { icon: 'fas fa-graduation-cap', label: 'Grades', id: 'grades', href: 'grades.html' },
+            { icon: 'fas fa-calculator', label: 'CGPA Calculator', id: 'cgpa', href: 'cgpa-calculator.html' },
+            { icon: 'fas fa-book-open', label: 'Course Materials', id: 'materials', href: 'course-materials.html' },
+            { icon: 'fas fa-calendar', label: 'Schedule', id: 'schedule', href: 'class-schedule.html' },
+            { icon: 'fas fa-clipboard-list', label: 'Assignments', id: 'assignments', href: 'assignments.html' },
+            { icon: 'fas fa-certificate', label: 'Certificates', id: 'certificates', href: 'certificates.html' },
+            { icon: 'fas fa-comments', label: 'Grievance Form', id: 'chat', href: 'grievance-form.html' },
+            { icon: 'fas fa-chart-line', label: 'Progress', id: 'progress', href: 'progress.html' },
+            { icon: 'fas fa-user', label: 'Profile', id: 'profile', href: 'profile.html' }
+        ]
+    };
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function () {
+        AppState.currentRole = 'student'; // Ensure role is set before loading navigation
+        loadNavigation();
+        // Apply sidebar collapsed state on page load
+        if (AppState.sidebarCollapsed) {
+            const sidebar = document.getElementById('sidebar');
+            const mainContentWrapper = document.getElementById('mainContentWrapper');
+            const header = document.getElementById('mainHeader');
+
+            sidebar.classList.add('sidebar-collapsed');
+            sidebar.classList.remove('w-64');
+            sidebar.classList.add('w-16');
+            mainContentWrapper.classList.remove('ml-64');
+            mainContentWrapper.classList.add('ml-16');
+            header && header.classList.remove('ml-64');
+            header && header.classList.add('ml-16');
+        }
+        initializeApp && initializeApp(); // Call initializeApp if defined
+    });
+    function loadNavigation() {
+        const nav = NavigationConfig[AppState.currentRole];
+        const navContainer = document.getElementById('sidebarNav');
+        navContainer.innerHTML = nav.map(item => `
+                <a href="${item.href}" class="nav-item flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 transition-colors ${item.id === 'assignments' ? 'bg-blue-50 text-blue-600 border-r-2 border-blue-600' : ''}" title="${item.label}">
+                    <span class="sidebar-nav-icon flex items-center justify-center w-6"><i class="${item.icon}"></i></span>
+                    <span class="sidebar-nav-label ml-3">${item.label}</span>
+                </a>
+            `).join('');
+    }
+    function loadPage(pageId) {
+        // Update active nav
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('bg-blue-50', 'text-blue-600', 'border-r-2', 'border-blue-600');
+        });
+        event.target.closest('.nav-item').classList.add('bg-blue-50', 'text-blue-600', 'border-r-2', 'border-blue-600');
+
+        // Update page title
+        const navItem = NavigationConfig[AppState.currentRole].find(item => item.id === pageId);
+        document.getElementById('pageTitle').textContent = navItem.label;
+
+        // Load content
+        loadDashboardContent(pageId);
+    }
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const mainContentWrapper = document.getElementById('mainContentWrapper');
+        const header = document.getElementById('mainHeader');
+        AppState.sidebarCollapsed = !AppState.sidebarCollapsed;
+
+        if (AppState.sidebarCollapsed) {
+            sidebar.classList.add('sidebar-collapsed');
+            sidebar.classList.remove('w-64');
+            sidebar.classList.add('w-16');
+            mainContentWrapper.classList.remove('ml-64');
+            mainContentWrapper.classList.add('ml-16');
+            header.classList.remove('ml-64');
+            header.classList.add('ml-16');
+        } else {
+            sidebar.classList.remove('sidebar-collapsed');
+            sidebar.classList.add('w-64');
+            sidebar.classList.remove('w-16');
+            mainContentWrapper.classList.remove('ml-16');
+            mainContentWrapper.classList.add('ml-64');
+            header.classList.remove('ml-16');
+            header.classList.add('ml-64');
+        }
+    }
+
+    function toggleUserMenu() {
+        const menu = document.getElementById('userMenu');
+        menu.classList.toggle('hidden');
+    }
+
+    function handleLogout() {
+        // Clear user state
+        AppState.currentUser = null;
+        AppState.currentRole = null;
+
+        // Redirect to login page
+        window.location.href = '../login.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Filter functionality
+        document.getElementById('course-filter').addEventListener('change', function () {
+            const selectedCourse = this.value;
+            console.log('Filtering by course:', selectedCourse);
+            // Implementation would filter assignments by course
+        });
+
+        document.getElementById('status-filter').addEventListener('change', function () {
+            const selectedStatus = this.value;
+            console.log('Filtering by status:', selectedStatus);
+            // Implementation would filter assignments by status
+        });
+
+        // File upload preview
+        const fileUpload = document.getElementById('file-upload');
+        if (fileUpload) {
+            fileUpload.addEventListener('change', function (e) {
+                // Simple file validation
+                const file = e.target.files[0];
+                if (file) {
+                    console.log('File selected:', file.name, file.size, file.type);
+                    // Implementation would show file preview and validate size/type
+                }
+            });
+        }
+
+        // Assignment selection change
+        const assignmentSelect = document.getElementById('assignment-select');
+        if (assignmentSelect) {
+            assignmentSelect.addEventListener('change', function () {
+                const selectedAssignment = this.value;
+                if (selectedAssignment) {
+                    console.log('Assignment selected:', selectedAssignment);
+                    // Implementation would load assignment details
+                }
+            });
+        }
+    });
+</script>
+
+</html>

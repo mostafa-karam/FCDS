@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Logs - FCDS Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="/assets/css/dashboard.css" rel="stylesheet">
+    <link href="/assets/css/tailwind-custom.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900">
+    <!-- Include Sidebar -->
+    <div id="sidebar-container"></div>
+
+    <!-- Include Header -->
+    <div id="header-container"></div>
+
+    <!-- Main Content -->
+    <main class="p-6 md:ml-64">
+        <div class="container mx-auto">
+            <!-- Page Header -->
+            <div class="mb-6">
+                <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Audit Logs</h1>
+                <p class="text-gray-600 dark:text-gray-400">View and manage system activity logs</p>
+            </div>
+
+            <!-- Filters -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <!-- Date Range -->
+                    <div>
+                        <label for="date-range" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Date
+                            Range</label>
+                        <select id="date-range" class="form-select mt-1" aria-label="Select date range">
+                            <option value="today">Today</option>
+                            <option value="yesterday">Yesterday</option>
+                            <option value="last7days">Last 7 Days</option>
+                            <option value="last30days">Last 30 Days</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+
+                    <!-- User -->
+                    <div>
+                        <label for="user-filter"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">User</label>
+                        <select id="user-filter" class="form-select mt-1" aria-label="Filter by user">
+                            <option value="">All Users</option>
+                        </select>
+                    </div>
+
+                    <!-- Action Type -->
+                    <div>
+                        <label for="action-type"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">Action Type</label>
+                        <select id="action-type" class="form-select mt-1" aria-label="Filter by action type">
+                            <option value="">All Actions</option>
+                            <option value="login">Login</option>
+                            <option value="logout">Logout</option>
+                            <option value="create">Create</option>
+                            <option value="update">Update</option>
+                            <option value="delete">Delete</option>
+                            <option value="export">Export</option>
+                            <option value="import">Import</option>
+                        </select>
+                    </div>
+
+                    <!-- Search -->
+                    <div>
+                        <label for="search"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">Search</label>
+                        <div class="mt-1 relative">
+                            <input type="text" id="search" class="form-input pl-10" placeholder="Search logs..."
+                                aria-label="Search logs">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Date Range (hidden by default) -->
+                <div id="custom-date-range" class="mt-4 hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="start-date"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">Start Date</label>
+                            <input type="date" id="start-date" class="form-input mt-1" aria-label="Start date">
+                        </div>
+                        <div>
+                            <label for="end-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">End
+                                Date</label>
+                            <input type="date" id="end-date" class="form-input mt-1" aria-label="End date">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logs Table -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-50 dark:bg-gray-700">
+                            <tr>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    Timestamp
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    User
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    Action
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    Details
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    IP Address
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    Status
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
+                            id="logs-table-body">
+                            <!-- Logs will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div
+                    class="bg-white dark:bg-gray-800 px-4 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 sm:px-6">
+                    <div class="flex-1 flex justify-between sm:hidden">
+                        <button id="prev-page-mobile" class="btn btn-secondary">
+                            Previous
+                        </button>
+                        <button id="next-page-mobile" class="btn btn-secondary">
+                            Next
+                        </button>
+                    </div>
+                    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                        <div>
+                            <p class="text-sm text-gray-700 dark:text-gray-300">
+                                Showing <span id="start-item">1</span> to <span id="end-item">10</span> of <span
+                                    id="total-items">20</span> results
+                            </p>
+                        </div>
+                        <div>
+                            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+                                aria-label="Pagination">
+                                <button id="prev-page" class="btn btn-secondary">
+                                    Previous
+                                </button>
+                                <button id="next-page" class="btn btn-secondary">
+                                    Next
+                                </button>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Button -->
+            <div class="mt-6 flex justify-end">
+                <button type="button" id="export-logs" class="btn btn-primary">
+                    <i class="fas fa-download mr-2"></i>
+                    Export Logs
+                </button>
+            </div>
+        </div>
+    </main>
+
+
+    <script>
+        // Load components
+        document.addEventListener('DOMContentLoaded', function () {
+
+
+            // Initialize audit logs
+            initializeAuditLogs();
+        });
+
+        // Initialize audit logs
+        function initializeAuditLogs() {
+            // Load users for filter
+            loadUsers();
+
+            // Set up event listeners
+            document.getElementById('date-range').addEventListener('change', handleDateRangeChange);
+            document.getElementById('user-filter').addEventListener('change', loadLogs);
+            document.getElementById('action-type').addEventListener('change', loadLogs);
+            document.getElementById('search').addEventListener('input', debounce(loadLogs, 300));
+            document.getElementById('export-logs').addEventListener('click', exportLogs);
+            document.getElementById('prev-page').addEventListener('click', () => changePage(-1));
+            document.getElementById('next-page').addEventListener('click', () => changePage(1));
+            document.getElementById('prev-page-mobile').addEventListener('click', () => changePage(-1));
+            document.getElementById('next-page-mobile').addEventListener('click', () => changePage(1));
+
+            // Initial load
+            loadLogs();
+        }
+
+        // Load users for filter
+        function loadUsers() {
+            fetch('/api/users')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const userFilter = document.getElementById('user-filter');
+                        data.users.forEach(user => {
+                            const option = document.createElement('option');
+                            option.value = user.id;
+                            option.textContent = user.name;
+                            userFilter.appendChild(option);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading users:', error);
+                    showError('Failed to load users');
+                });
+        }
+
+        // Handle date range change
+        function handleDateRangeChange() {
+            const dateRange = document.getElementById('date-range');
+            const customDateRange = document.getElementById('custom-date-range');
+
+            if (dateRange.value === 'custom') {
+                customDateRange.classList.remove('hidden');
+            } else {
+                customDateRange.classList.add('hidden');
+                loadLogs();
+            }
+        }
+
+        // Load logs
+        function loadLogs() {
+            const filters = {
+                dateRange: document.getElementById('date-range').value,
+                userId: document.getElementById('user-filter').value,
+                actionType: document.getElementById('action-type').value,
+                search: document.getElementById('search').value,
+                page: currentPage,
+                limit: itemsPerPage
+            };
+
+            if (filters.dateRange === 'custom') {
+                filters.startDate = document.getElementById('start-date').value;
+                filters.endDate = document.getElementById('end-date').value;
+            }
+
+            fetch('/api/audit-logs?' + new URLSearchParams(filters))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        renderLogs(data.logs);
+                        updatePagination(data.total);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading logs:', error);
+                    showError('Failed to load logs');
+                });
+        }
+
+        // Render logs
+        function renderLogs(logs) {
+            const tbody = document.getElementById('logs-table-body');
+            tbody.innerHTML = '';
+
+            logs.forEach(log => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        ${formatDate(log.timestamp)}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        ${log.userName}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getActionColor(log.action)}">
+                            ${log.action}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">
+                        ${log.details}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        ${log.ipAddress}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(log.status)}">
+                            ${log.status}
+                        </span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Update pagination
+        function updatePagination(total) {
+            const startItem = (currentPage - 1) * itemsPerPage + 1;
+            const endItem = Math.min(startItem + itemsPerPage - 1, total);
+
+            document.getElementById('start-item').textContent = startItem;
+            document.getElementById('end-item').textContent = endItem;
+            document.getElementById('total-items').textContent = total;
+
+            // Update button states
+            document.getElementById('prev-page').disabled = currentPage === 1;
+            document.getElementById('prev-page-mobile').disabled = currentPage === 1;
+            document.getElementById('next-page').disabled = endItem >= total;
+            document.getElementById('next-page-mobile').disabled = endItem >= total;
+        }
+
+        // Change page
+        function changePage(delta) {
+            currentPage += delta;
+            loadLogs();
+        }
+
+        // Export logs
+        function exportLogs() {
+            const filters = {
+                dateRange: document.getElementById('date-range').value,
+                userId: document.getElementById('user-filter').value,
+                actionType: document.getElementById('action-type').value,
+                search: document.getElementById('search').value
+            };
+
+            if (filters.dateRange === 'custom') {
+                filters.startDate = document.getElementById('start-date').value;
+                filters.endDate = document.getElementById('end-date').value;
+            }
+
+            window.location.href = '/api/audit-logs/export?' + new URLSearchParams(filters);
+        }
+
+        // Helper functions
+        function formatDate(date) {
+            return new Date(date).toLocaleString();
+        }
+
+        function getActionColor(action) {
+            const colors = {
+                login: 'bg-green-100 text-green-800',
+                logout: 'bg-gray-100 text-gray-800',
+                create: 'bg-blue-100 text-blue-800',
+                update: 'bg-yellow-100 text-yellow-800',
+                delete: 'bg-red-100 text-red-800',
+                export: 'bg-purple-100 text-purple-800',
+                import: 'bg-indigo-100 text-indigo-800'
+            };
+            return colors[action.toLowerCase()] || 'bg-gray-100 text-gray-800';
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                success: 'bg-green-100 text-green-800',
+                warning: 'bg-yellow-100 text-yellow-800',
+                error: 'bg-red-100 text-red-800'
+            };
+            return colors[status.toLowerCase()] || 'bg-gray-100 text-gray-800';
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Show error message
+        function showError(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 right-4 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 ease-in-out';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Pagination variables
+        let currentPage = 1;
+        const itemsPerPage = 10;
+    </script>
+</body>
+
+</html>

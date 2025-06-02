@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - FCDS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="stylesheet" href="../../css/tailwind-custom.css">
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white antialiased min-h-screen flex flex-col">
+
+
+    <!-- Main Content -->
+    <div class="main-content p-4 sm:p-6 lg:p-8 ml-0 md:ml-64 transition-all duration-300 mt-16">
+        <!-- Staff Header Section -->
+        <div class="dashboard-header mb-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h1 class="dashboard-title text-2xl font-bold mb-2">Staff Dashboard</h1>
+                    <p class="dashboard-subtitle">Manage department operations and student services</p>
+                </div>
+                <div class="mt-4 md:mt-0 flex space-x-3">
+                    <button id="create-announcement" class="btn btn-primary flex items-center">
+                        <i class="fas fa-bullhorn mr-2"></i> Create Announcement
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <!-- Active Students -->
+            <div class="dashboard-card">
+                <div class="stat-card">
+                    <div class="stat-icon bg-primary-soft text-primary">
+                        <i class="fas fa-user-graduate text-xl"></i>
+                    </div>
+                    <div class="stat-content">
+                        <p class="stat-label">Active Students</p>
+                        <p class="stat-value" id="active-students">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Requests -->
+            <div class="dashboard-card">
+                <div class="stat-card">
+                    <div class="stat-icon bg-warning-soft text-warning">
+                        <i class="fas fa-clock text-xl"></i>
+                    </div>
+                    <div class="stat-content">
+                        <p class="stat-label">Pending Requests</p>
+                        <p class="stat-value" id="pending-requests">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Events -->
+            <div class="dashboard-card">
+                <div class="stat-card">
+                    <div class="stat-icon bg-success-soft text-success">
+                        <i class="fas fa-calendar-alt text-xl"></i>
+                    </div>
+                    <div class="stat-content">
+                        <p class="stat-label">Upcoming Events</p>
+                        <p class="stat-value" id="upcoming-events">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Announcements -->
+            <div class="dashboard-card">
+                <div class="stat-card">
+                    <div class="stat-icon bg-secondary-soft text-secondary">
+                        <i class="fas fa-bullhorn text-xl"></i>
+                    </div>
+                    <div class="stat-content">
+                        <p class="stat-label">Recent Announcements</p>
+                        <p class="stat-value" id="recent-announcements">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Recent Student Requests -->
+            <div class="dashboard-card col-span-1 lg:col-span-2">
+                <div class="card-header">
+                    <h2 class="card-title">Recent Student Requests</h2>
+                </div>
+                <div class="card-body">
+                    <div class="overflow-x-auto">
+                        <table class="dashboard-table min-w-full">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Request Type</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="requests-table-body">
+                                <tr>
+                                    <td class="text-sm text-gray-500 dark:text-gray-400" colspan="5">
+                                        Loading requests...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4 text-right">
+                        <a href="#" class="text-primary hover:text-primary-dark text-sm font-medium">
+                            View All Requests <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Events -->
+            <div class="dashboard-card col-span-1">
+                <div class="card-header">
+                    <h2 class="card-title">Upcoming Events</h2>
+                </div>
+                <div class="card-body">
+                    <div class="space-y-4" id="events-list">
+                        <div class="text-sm text-gray-500 dark:text-gray-400">Loading events...</div>
+                    </div>
+                    <div class="mt-4 text-right">
+                        <a href="#" class="text-primary hover:text-primary-dark text-sm font-medium">
+                            Manage Events <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Announcements -->
+        <div class="dashboard-card mt-6">
+            <div class="card-header">
+                <h2 class="card-title">Recent Announcements</h2>
+            </div>
+            <div class="card-body">
+                <div class="space-y-6" id="announcements-list">
+                    <div class="text-sm text-gray-500 dark:text-gray-400">Loading announcements...</div>
+                </div>
+                <div class="mt-4 text-right">
+                    <a href="#" class="text-primary hover:text-primary-dark text-sm font-medium">
+                        View All Announcements <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Announcement Modal -->
+    <div id="announcement-modal"
+        class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white dark:bg-gray-800">
+            <div class="mt-3">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Create Announcement</h3>
+                <form id="announcement-form">
+                    <!-- Title -->
+                    <div class="mb-4">
+                        <label for="announcement-title"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
+                        <input type="text" id="announcement-title" name="title"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            required>
+                        <div class="error-message text-red-600 text-sm mt-1 hidden"></div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="mb-4">
+                        <label for="announcement-content"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">Content</label>
+                        <textarea id="announcement-content" name="content" rows="4"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            required></textarea>
+                        <div class="error-message text-red-600 text-sm mt-1 hidden"></div>
+                    </div>
+
+                    <!-- Target Audience -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Target
+                            Audience</label>
+                        <div class="mt-2 space-y-2">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="audience-students" name="audience" value="students"
+                                    class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                                <label for="audience-students"
+                                    class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Students</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="audience-staff" name="audience" value="staff"
+                                    class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                                <label for="audience-staff"
+                                    class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Staff</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="audience-faculty" name="audience" value="faculty"
+                                    class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                                <label for="audience-faculty"
+                                    class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Faculty</label>
+                            </div>
+                        </div>
+                        <div class="error-message text-red-600 text-sm mt-1 hidden"></div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" id="cancel-announcement" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" id="submit-announcement" class="btn btn-primary">Publish
+                            Announcement</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Staff Dashboard Specific Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Load mock data
+            loadMockData();
+
+            // Modal functionality
+            const modal = document.getElementById('announcement-modal');
+            const createAnnouncementBtn = document.getElementById('create-announcement');
+            const cancelAnnouncementBtn = document.getElementById('cancel-announcement');
+            const announcementForm = document.getElementById('announcement-form');
+
+            createAnnouncementBtn.addEventListener('click', function () {
+                modal.classList.remove('hidden');
+            });
+
+            cancelAnnouncementBtn.addEventListener('click', function () {
+                modal.classList.add('hidden');
+            });
+
+            announcementForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                // In a real app, this would submit to an API
+                alert('Announcement published successfully!');
+                modal.classList.add('hidden');
+            });
+        });
+
+        function loadMockData() {
+            // Mock data for dashboard stats
+            document.getElementById('active-students').textContent = '1,245';
+            document.getElementById('pending-requests').textContent = '28';
+            document.getElementById('upcoming-events').textContent = '5';
+            document.getElementById('recent-announcements').textContent = '12';
+
+            // Mock data for student requests
+            const requestsTableBody = document.getElementById('requests-table-body');
+            const requestsData = [
+                {
+                    student: 'Emma Davis',
+                    id: 'STU2023001',
+                    type: 'Transcript Request',
+                    date: '2023-07-10',
+                    status: 'Pending',
+                    action: 'Process'
+                },
+                {
+                    student: 'Michael Brown',
+                    id: 'STU2023042',
+                    type: 'Certificate Verification',
+                    date: '2023-07-09',
+                    status: 'In Progress',
+                    action: 'View'
+                },
+                {
+                    student: 'Sophia Wilson',
+                    id: 'STU2022189',
+                    type: 'Course Registration',
+                    date: '2023-07-08',
+                    status: 'Pending',
+                    action: 'Process'
+                },
+                {
+                    student: 'James Johnson',
+                    id: 'STU2023078',
+                    type: 'Financial Aid',
+                    date: '2023-07-07',
+                    status: 'Pending',
+                    action: 'Process'
+                }
+            ];
+
+            requestsTableBody.innerHTML = requestsData.map(request => `
+                <tr>
+                    <td>
+                        <div class="font-medium">${request.student}</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">${request.id}</div>
+                    </td>
+                    <td>${request.type}</td>
+                    <td>${request.date}</td>
+                    <td>
+                        <span class="badge ${request.status === 'Pending' ? 'badge-warning' : 'badge-primary'}">
+                            ${request.status}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="#" class="text-primary hover:text-primary-dark">
+                            <i class="fas fa-${request.status === 'Pending' ? 'cog' : 'eye'} mr-1"></i> ${request.action}
+                        </a>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Mock data for upcoming events
+            const eventsList = document.getElementById('events-list');
+            const eventsData = [
+                {
+                    title: 'New Student Orientation',
+                    date: 'Jul 15, 2023',
+                    time: '9:00 AM - 12:00 PM',
+                    location: 'Main Auditorium'
+                },
+                {
+                    title: 'Faculty Meeting',
+                    date: 'Jul 17, 2023',
+                    time: '2:00 PM - 4:00 PM',
+                    location: 'Conference Room A'
+                },
+                {
+                    title: 'Registration Deadline',
+                    date: 'Jul 20, 2023',
+                    time: 'All Day',
+                    location: 'Online'
+                }
+            ];
+
+            eventsList.innerHTML = eventsData.map(event => `
+                <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <p class="text-sm font-medium">${event.title}</p>
+                    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        <i class="far fa-calendar mr-1"></i>
+                        <span>${event.date}</span>
+                    </div>
+                    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                        <i class="far fa-clock mr-1"></i>
+                        <span>${event.time}</span>
+                    </div>
+                    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                        <i class="fas fa-map-marker-alt mr-1"></i>
+                        <span>${event.location}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // Mock data for announcements
+            const announcementsList = document.getElementById('announcements-list');
+            const announcementsData = [
+                {
+                    title: 'Summer Semester Registration Now Open',
+                    content: 'Registration for the Summer 2023 semester is now open. Students can register through the online portal until July 20th.',
+                    date: 'Jul 5, 2023',
+                    author: 'Academic Affairs',
+                    audience: ['Students', 'Faculty']
+                },
+                {
+                    title: 'Campus Maintenance Schedule',
+                    content: 'The IT systems will be undergoing maintenance this weekend. Expect intermittent service disruptions between 10 PM Saturday and 2 AM Sunday.',
+                    date: 'Jul 3, 2023',
+                    author: 'IT Department',
+                    audience: ['Students', 'Staff', 'Faculty']
+                },
+                {
+                    title: 'New Faculty Orientation',
+                    content: 'All new faculty members are required to attend the orientation session on July 15th at 10:00 AM in the Faculty Lounge.',
+                    date: 'Jul 1, 2023',
+                    author: 'Human Resources',
+                    audience: ['Faculty']
+                }
+            ];
+
+            announcementsList.innerHTML = announcementsData.map(announcement => `
+                <div class="border-l-4 border-primary pl-4">
+                    <h3 class="text-lg font-medium">${announcement.title}</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">${announcement.content}</p>
+                    <div class="flex flex-wrap items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
+                        <span class="mr-3"><i class="far fa-calendar mr-1"></i> ${announcement.date}</span>
+                        <span class="mr-3"><i class="far fa-user mr-1"></i> ${announcement.author}</span>
+                        <div class="flex flex-wrap mt-1">
+                            ${announcement.audience.map(group => `
+                                <span class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full mr-1 mb-1">
+                                    ${group}
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+
+</html>

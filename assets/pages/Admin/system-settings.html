@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Settings - FCDS Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="/assets/css/dashboard.css" rel="stylesheet">
+    <link href="/assets/css/tailwind-custom.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900">
+    <!-- Include Sidebar -->
+    <div id="sidebar-container"></div>
+
+    <!-- Include Header -->
+    <div id="header-container"></div>
+
+    <!-- Main Content -->
+    <main class="p-6 md:ml-64">
+        <div class="container mx-auto">
+            <!-- Page Header -->
+            <div class="mb-6">
+                <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">System Settings</h1>
+                <p class="text-gray-600 dark:text-gray-400">Configure system-wide settings and preferences</p>
+            </div>
+
+            <!-- Settings Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- General Settings -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                    <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">General Settings</h2>
+                    <form id="general-settings-form">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">System
+                                    Name</label>
+                                <input type="text" name="systemName" class="form-input mt-1" value="FCDS College"
+                                    title="FCDS College" placeholder="FCDS College">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">System
+                                    Email</label>
+                                <input type="email" name="systemEmail" class="form-input mt-1" value="admin@fcds.edu"
+                                    title="admin@fcds.edu" placeholder="admin@fcds.edu">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Time
+                                    Zone</label>
+                                <select name="timezone" class="form-select mt-1" title="UTC" placeholder="UTC">
+                                    <option value="UTC">UTC</option>
+                                    <option value="EST">Eastern Time</option>
+                                    <option value="CST">Central Time</option>
+                                    <option value="PST">Pacific Time</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Date
+                                    Format</label>
+                                <select name="dateFormat" class="form-select mt-1" title="MM/DD/YYYY"
+                                    placeholder="MM/DD/YYYY">
+                                    <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Security Settings -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                    <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Security Settings</h2>
+                    <form id="security-settings-form">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Session
+                                    Timeout (minutes)</label>
+                                <input type="number" name="sessionTimeout" class="form-input mt-1" value="30" min="5"
+                                    max="120" title="30" placeholder="30">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password
+                                    Expiry (days)</label>
+                                <input type="number" name="passwordExpiry" class="form-input mt-1" value="90" min="30"
+                                    max="365" title="90" placeholder="90">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Failed Login
+                                    Attempts</label>
+                                <input type="number" name="maxLoginAttempts" class="form-input mt-1" value="5" min="3"
+                                    max="10" title="5" placeholder="5">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Account
+                                    Lockout Duration (minutes)</label>
+                                <input type="number" name="lockoutDuration" class="form-input mt-1" value="30" min="15"
+                                    max="1440" title="30" placeholder="30">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Email Settings -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                    <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Email Settings</h2>
+                    <form id="email-settings-form">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">SMTP
+                                    Server</label>
+                                <input type="text" name="smtpServer" class="form-input mt-1" value="smtp.fcds.edu"
+                                    title="smtp.fcds.edu" placeholder="smtp.fcds.edu">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">SMTP
+                                    Port</label>
+                                <input type="number" name="smtpPort" class="form-input mt-1" value="587" title="587"
+                                    placeholder="587">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">SMTP
+                                    Username</label>
+                                <input type="text" name="smtpUsername" class="form-input mt-1" title="smtpUsername"
+                                    placeholder="smtpUsername">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">SMTP
+                                    Password</label>
+                                <input type="password" name="smtpPassword" class="form-input mt-1" title="smtpPassword"
+                                    placeholder="smtpPassword">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Notification Settings -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                    <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Notification Settings</h2>
+                    <form id="notification-settings-form">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email
+                                    Notifications</label>
+                                <div class="mt-2 space-y-2">
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" name="emailNotifications[]" value="newUser"
+                                            class="form-checkbox" checked>
+                                        <span class="ml-2">New User Registration</span>
+                                    </label>
+                                    <br>
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" name="emailNotifications[]" value="passwordReset"
+                                            class="form-checkbox" checked>
+                                        <span class="ml-2">Password Reset Requests</span>
+                                    </label>
+                                    <br>
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" name="emailNotifications[]" value="assignmentSubmission"
+                                            class="form-checkbox" checked>
+                                        <span class="ml-2">Assignment Submissions</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">System
+                                    Notifications</label>
+                                <div class="mt-2 space-y-2">
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" name="systemNotifications[]" value="maintenance"
+                                            class="form-checkbox" checked>
+                                        <span class="ml-2">System Maintenance</span>
+                                    </label>
+                                    <br>
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" name="systemNotifications[]" value="updates"
+                                            class="form-checkbox" checked>
+                                        <span class="ml-2">System Updates</span>
+                                    </label>
+                                    <br>
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" name="systemNotifications[]" value="security"
+                                            class="form-checkbox" checked>
+                                        <span class="ml-2">Security Alerts</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="mt-6 flex justify-end">
+                <button type="button" id="save-settings" class="btn btn-primary">
+                    <i class="fas fa-save mr-2"></i>
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+
+    <script>
+        // Load components
+        document.addEventListener('DOMContentLoaded', function () {
+
+
+            // Initialize settings
+            initializeSettings();
+        });
+
+        // Initialize settings
+        function initializeSettings() {
+            // Load current settings
+            fetch('/api/settings')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        populateSettings(data.settings);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading settings:', error);
+                    showError('Failed to load settings');
+                });
+
+            // Save settings
+            document.getElementById('save-settings').addEventListener('click', saveSettings);
+        }
+
+        // Populate settings forms
+        function populateSettings(settings) {
+            // General settings
+            const generalForm = document.getElementById('general-settings-form');
+            if (generalForm) {
+                Object.entries(settings.general).forEach(([key, value]) => {
+                    const input = generalForm.elements[key];
+                    if (input) input.value = value;
+                });
+            }
+
+            // Security settings
+            const securityForm = document.getElementById('security-settings-form');
+            if (securityForm) {
+                Object.entries(settings.security).forEach(([key, value]) => {
+                    const input = securityForm.elements[key];
+                    if (input) input.value = value;
+                });
+            }
+
+            // Email settings
+            const emailForm = document.getElementById('email-settings-form');
+            if (emailForm) {
+                Object.entries(settings.email).forEach(([key, value]) => {
+                    const input = emailForm.elements[key];
+                    if (input) input.value = value;
+                });
+            }
+
+            // Notification settings
+            const notificationForm = document.getElementById('notification-settings-form');
+            if (notificationForm) {
+                // Email notifications
+                settings.notifications.email.forEach(value => {
+                    const checkbox = notificationForm.querySelector(`input[value="${value}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
+
+                // System notifications
+                settings.notifications.system.forEach(value => {
+                    const checkbox = notificationForm.querySelector(`input[value="${value}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
+            }
+        }
+
+        // Save settings
+        function saveSettings() {
+            const settings = {
+                general: getFormData('general-settings-form'),
+                security: getFormData('security-settings-form'),
+                email: getFormData('email-settings-form'),
+                notifications: {
+                    email: getCheckedValues('emailNotifications[]'),
+                    system: getCheckedValues('systemNotifications[]')
+                }
+            };
+
+            fetch('/api/settings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(settings)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showSuccess('Settings saved successfully');
+                    } else {
+                        showError('Failed to save settings');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error saving settings:', error);
+                    showError('Failed to save settings');
+                });
+        }
+
+        // Helper function to get form data
+        function getFormData(formId) {
+            const form = document.getElementById(formId);
+            const formData = new FormData(form);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            return data;
+        }
+
+        // Helper function to get checked values
+        function getCheckedValues(name) {
+            return Array.from(document.getElementsByName(name))
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.value);
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 ease-in-out';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Show error message
+        function showError(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 right-4 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 ease-in-out';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

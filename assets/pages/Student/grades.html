@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grades & Performance - FCDS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        success: {
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            700: '#15803d',
+                        },
+                        warning: {
+                            100: '#fef9c3',
+                            500: '#eab308',
+                            700: '#a16207',
+                        },
+                        danger: {
+                            100: '#fee2e2',
+                            500: '#ef4444',
+                            700: '#b91c1c',
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        .sidebar-transition {
+            transition: width 0.3s ease;
+        }
+
+        .sidebar-collapsed {
+            width: 4rem !important;
+        }
+
+        .sidebar-collapsed .sidebar-content,
+        .sidebar-collapsed .sidebar-label {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar-content,
+        .sidebar-label {
+            transition: opacity 0.2s;
+        }
+
+        .sidebar-collapsed .sidebar-nav-icon {
+            margin-right: 0 !important;
+            justify-content: center;
+        }
+
+        .sidebar-collapsed .sidebar-nav-label {
+            display: none;
+        }
+
+        .glass-effect {
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s ease;
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .typing-indicator {
+            animation: typing 1.5s infinite;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .header-fixed-height {
+            height: 72px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 antialiased min-h-screen flex flex-col">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="bg-white shadow-lg sidebar-transition w-64 fixed h-full z-40 flex flex-col">
+        <div class="p-6 border-b border-gray-200 sidebar-content">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-primary-900 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-graduation-cap text-white"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-gray-800">FCDS</h2>
+                    <p class="text-xs text-gray-500" id="userRole">Student</p>
+                </div>
+            </div>
+        </div>
+        <nav class="mt-6 flex-1" id="sidebarNav">
+            <!-- Dynamic navigation will be inserted here -->
+        </nav>
+    </aside>
+    <!-- Top Navbar -->
+    <header id="mainHeader"
+        class="bg-white shadow-sm border-b border-gray-200 px-6 py-4 fixed left-0 right-0 top-0 z-30 ml-64 transition-all duration-300 flex items-center justify-between header-fixed-height">
+        <div class="flex items-center space-x-4">
+            <button id="sidebarToggle"
+                class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                aria-label="Toggle sidebar" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="text-2xl font-bold text-gray-800" id="pageTitle">Grades</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+            <!-- Search -->
+            <div class="relative hidden md:block">
+                <input type="text" placeholder="Search..."
+                    class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 bg-gray-100 text-gray-800"
+                    aria-label="Search">
+                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+            <!-- Notifications -->
+            <button class="relative p-2 text-gray-500 hover:bg-gray-100 rounded-lg" aria-label="Notifications">
+                <i class="fas fa-bell"></i>
+                <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+            <!-- User Menu -->
+            <div class="relative">
+                <button id="userMenuToggle"
+                    class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 focus:outline-none"
+                    onclick="toggleUserMenu()">
+                    <div class="w-8 h-8 bg-primary-900 rounded-full flex items-center justify-center">
+                        <span class="text-white text-sm font-medium" id="userInitials">SW</span>
+                    </div>
+                    <span class="hidden md:block text-sm font-medium text-gray-700" id="userName">Sophia Wilson</span>
+                    <i class="fas fa-chevron-down text-xs"></i>
+                </button>
+                <div id="userMenu"
+                    class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden">
+                    <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                    <hr class="border-gray-200">
+                    <button id="logoutBtn"
+                        class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                        onclick="handleLogout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Main Content -->
+    <main class="p-6 ml-64 pt-24 transition-all duration-300" id="mainContentWrapper">
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Grades & Performance</h1>
+            <p class="text-gray-600 dark:text-gray-400">Track your academic progress and performance analytics</p>
+        </div>
+
+        <!-- Semester Selector & Actions -->
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6 space-y-4 md:space-y-0">
+            <!-- Semester Selector -->
+            <div class="flex items-center space-x-2">
+                <select id="semester-selector"
+                    class="rounded-md border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 dark:bg-gray-700 py-2 px-3 text-sm focus:border-primary-500 focus:ring-primary-500"
+                    aria-label="Select semester" title="Select semester">
+                    <option value="current">Current Semester (3rd)</option>
+                    <option value="sem2">2nd Semester</option>
+                    <option value="sem1">1st Semester</option>
+                    <option value="all">All Semesters</option>
+                </select>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center space-x-2">
+                <button
+                    class="flex items-center px-3 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md text-sm font-medium"
+                    title="Export grades report">
+                    <i class="fas fa-download mr-2"></i> Export Report
+                </button>
+                <button
+                    class="flex items-center px-3 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-md text-sm font-medium"
+                    title="Print grades">
+                    <i class="fas fa-print mr-2"></i> Print
+                </button>
+            </div>
+        </div>
+
+        <!-- Performance Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <!-- GPA -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center">
+                    <div
+                        class="p-3 rounded-full bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-300 mr-4">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Current GPA</p>
+                        <p class="text-xl font-semibold text-gray-900 dark:text-white">3.7</p>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm text-success-600 dark:text-success-400">
+                    <i class="fas fa-arrow-up mr-1"></i> 0.2 from last semester
+                </div>
+            </div>
+
+            <!-- Total Credits -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center">
+                    <div
+                        class="p-3 rounded-full bg-secondary-100 dark:bg-secondary-900 text-secondary-600 dark:text-secondary-300 mr-4">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Credits Earned</p>
+                        <p class="text-xl font-semibold text-gray-900 dark:text-white">45/120</p>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                    12 credits this semester
+                </div>
+            </div>
+
+            <!-- Academic Standing -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center">
+                    <div
+                        class="p-3 rounded-full bg-success-100 dark:bg-success-900 text-success-600 dark:text-success-300 mr-4">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Academic Standing</p>
+                        <p class="text-xl font-semibold text-success-600 dark:text-success-400">Good Standing</p>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                    Eligible for scholarship
+                </div>
+            </div>
+
+            <!-- Class Rank -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center">
+                    <div
+                        class="p-3 rounded-full bg-warning-100 dark:bg-warning-900 text-warning-600 dark:text-warning-300 mr-4">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Class Rank</p>
+                        <p class="text-xl font-semibold text-gray-900 dark:text-white">5<span
+                                class="text-sm">/120</span></p>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm text-success-600 dark:text-success-400">
+                    <i class="fas fa-arrow-up mr-1"></i> Up 2 positions
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- GPA Trend Chart -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-gray-200 dark:border-gray-700">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">GPA Trend</h2>
+                <div id="gpa-trend-chart" class="h-80"></div>
+            </div>
+
+            <!-- Performance by Subject Chart -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-gray-200 dark:border-gray-700">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Current Semester Performance</h2>
+                <div id="subject-performance-chart" class="h-80"></div>
+            </div>
+        </div>
+
+        <!-- Current Semester Grades -->
+        <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
+            <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Current Semester Grades</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Course
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Credits
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Assignments
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Midterm
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Final
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Overall
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Grade
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        <!-- CS101 -->
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900 dark:text-white">CS101</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Introduction to Programming</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                4
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                92%
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                88%
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                90%
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                90%
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-success-100 text-success-800 dark:bg-success-900 dark:text-success-200">
+                                    A
+                                </span>
+                            </td>
+                        </tr>
+
+                        <!-- DS201 -->
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900 dark:text-white">DS201</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Data Structures and Algorithms
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                4
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                85%
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                82%
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                86%
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                84%
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-success-100 text-success-800 dark:bg-success-900 dark:text-success-200">
+                                    B+
+                                </span>
+                            </td>
+                        </tr>
+
+                        <!-- AI301 -->
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900 dark:text-white">AI301</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Machine Learning Fundamentals
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                3
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                78%
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                80%
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                In Progress
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                79%
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-warning-100 text-warning-800 dark:bg-warning-900 dark:text-warning-200">
+                                    B
+                                </span>
+                            </td>
+                        </tr>
+
+                        <!-- DB401 -->
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900 dark:text-white">DB401</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Database Systems</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                3
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                88%
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                75%
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                In Progress
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                81%
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-warning-100 text-warning-800 dark:bg-warning-900 dark:text-warning-200">
+                                    B
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Transcript & History -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Grade Distribution -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Grade Distribution</h2>
+                </div>
+                <div class="p-4">
+                    <div id="grade-distribution-chart" class="h-64"></div>
+                    <div class="mt-4 grid grid-cols-4 gap-2 text-center">
+                        <div>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">A</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">5 courses</div>
+                        </div>
+                        <div>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">B</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">4 courses</div>
+                        </div>
+                        <div>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">C</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">1 course</div>
+                        </div>
+                        <div>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">D/F</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">0 courses</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semester Summary -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Semester Summary</h2>
+                </div>
+                <div class="p-4">
+                    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <li class="py-3 flex justify-between">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">1st Semester</span>
+                            <div class="text-right">
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">GPA: 3.4</span>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">15 Credits</div>
+                            </div>
+                        </li>
+                        <li class="py-3 flex justify-between">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">2nd Semester</span>
+                            <div class="text-right">
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">GPA: 3.5</span>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">18 Credits</div>
+                            </div>
+                        </li>
+                        <li class="py-3 flex justify-between font-medium">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Current Semester</span>
+                            <div class="text-right">
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">GPA: 3.7</span>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">12 Credits</div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="mt-4">
+                        <a href="#" class="text-sm text-primary-600 dark:text-primary-400 hover:underline">View Complete
+                            Transcript</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Feedback -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Feedback</h2>
+                </div>
+                <div class="p-4">
+                    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <li class="py-3">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">DS201 Assignment
+                                    #3</span>
+                                <span class="text-xs text-gray-500 dark:text-gray-400">2 days ago</span>
+                            </div>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">
+                                "Good algorithm implementation. Work on optimizing time complexity in future
+                                assignments."
+                            </p>
+                            <div class="mt-1 flex items-center">
+                                <span class="text-xs font-medium text-success-600 dark:text-success-400">Grade:
+                                    88%</span>
+                                <a href="#"
+                                    class="ml-auto text-xs text-primary-600 dark:text-primary-400 hover:underline">View
+                                    Details</a>
+                            </div>
+                        </li>
+                        <li class="py-3">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">AI301 Midterm</span>
+                                <span class="text-xs text-gray-500 dark:text-gray-400">1 week ago</span>
+                            </div>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">
+                                "Strong understanding of core concepts. Need improvement in practical application
+                                sections."
+                            </p>
+                            <div class="mt-1 flex items-center">
+                                <span class="text-xs font-medium text-warning-600 dark:text-warning-400">Grade:
+                                    80%</span>
+                                <a href="#"
+                                    class="ml-auto text-xs text-primary-600 dark:text-primary-400 hover:underline">View
+                                    Details</a>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="mt-4">
+                        <a href="#" class="text-sm text-primary-600 dark:text-primary-400 hover:underline">View All
+                            Feedback</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 py-4 mt-auto">
+        <div class="container mx-auto text-center">
+            <p class="text-sm">&copy; 2025 FCDS. All rights reserved.</p>
+            <p class="text-xs">Designed with <i class="fas fa-heart text-red-500"></i> by FCDS Team</p>
+        </div>
+    </footer>
+
+</body>
+
+<!-- Page Specific Script -->
+<script>
+    // Global state management
+    const AppState = {
+        currentUser: null,
+        currentRole: null,
+        sidebarCollapsed: true,
+    };
+
+    // Role-based navigation configurations
+    const NavigationConfig = {
+        'student': [
+            { icon: 'fas fa-tachometer-alt', label: 'Dashboard', id: 'dashboard', href: 'student-db.html' },
+            { icon: 'fas fa-calendar-check', label: 'Attendance', id: 'attendance', href: 'attendance.html' },
+            { icon: 'fas fa-book', label: 'Courses', id: 'courses', href: 'courses.html' },
+            { icon: 'fas fa-credit-card', label: 'Fees & Payments', id: 'fees', href: 'fees-payments.html' },
+            { icon: 'fas fa-graduation-cap', label: 'Grades', id: 'grades', href: 'grades.html' },
+            { icon: 'fas fa-calculator', label: 'CGPA Calculator', id: 'cgpa', href: 'cgpa-calculator.html' },
+            { icon: 'fas fa-book-open', label: 'Course Materials', id: 'materials', href: 'course-materials.html' },
+            { icon: 'fas fa-calendar', label: 'Schedule', id: 'schedule', href: 'class-schedule.html' },
+            { icon: 'fas fa-clipboard-list', label: 'Assignments', id: 'assignments', href: 'assignments.html' },
+            { icon: 'fas fa-certificate', label: 'Certificates', id: 'certificates', href: 'certificates.html' },
+            { icon: 'fas fa-comments', label: 'Grievance Form', id: 'chat', href: 'grievance-form.html' },
+            { icon: 'fas fa-chart-line', label: 'Progress', id: 'progress', href: 'progress.html' },
+            { icon: 'fas fa-user', label: 'Profile', id: 'profile', href: 'profile.html' }
+        ]
+    };
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function () {
+        AppState.currentRole = 'student'; // Ensure role is set before loading navigation
+        loadNavigation();
+        // Apply sidebar collapsed state on page load
+        if (AppState.sidebarCollapsed) {
+            const sidebar = document.getElementById('sidebar');
+            const mainContentWrapper = document.getElementById('mainContentWrapper');
+            const header = document.getElementById('mainHeader');
+
+            sidebar.classList.add('sidebar-collapsed');
+            sidebar.classList.remove('w-64');
+            sidebar.classList.add('w-16');
+            mainContentWrapper.classList.remove('ml-64');
+            mainContentWrapper.classList.add('ml-16');
+            header && header.classList.remove('ml-64');
+            header && header.classList.add('ml-16');
+        }
+        initializeApp && initializeApp(); // Call initializeApp if defined
+    });
+    function loadNavigation() {
+        const nav = NavigationConfig[AppState.currentRole];
+        const navContainer = document.getElementById('sidebarNav');
+        navContainer.innerHTML = nav.map(item => `
+                <a href="${item.href}" class="nav-item flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 transition-colors ${item.id === 'grades' ? 'bg-blue-50 text-blue-600 border-r-2 border-blue-600' : ''}" title="${item.label}">
+                    <span class="sidebar-nav-icon flex items-center justify-center w-6"><i class="${item.icon}"></i></span>
+                    <span class="sidebar-nav-label ml-3">${item.label}</span>
+                </a>
+            `).join('');
+    }
+    function loadPage(pageId) {
+        // Update active nav
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('bg-blue-50', 'text-blue-600', 'border-r-2', 'border-blue-600');
+        });
+        event.target.closest('.nav-item').classList.add('bg-blue-50', 'text-blue-600', 'border-r-2', 'border-blue-600');
+
+        // Update page title
+        const navItem = NavigationConfig[AppState.currentRole].find(item => item.id === pageId);
+        document.getElementById('pageTitle').textContent = navItem.label;
+
+        // Load content
+        loadDashboardContent(pageId);
+    }
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const mainContentWrapper = document.getElementById('mainContentWrapper');
+        const header = document.getElementById('mainHeader');
+        AppState.sidebarCollapsed = !AppState.sidebarCollapsed;
+
+        if (AppState.sidebarCollapsed) {
+            sidebar.classList.add('sidebar-collapsed');
+            sidebar.classList.remove('w-64');
+            sidebar.classList.add('w-16');
+            mainContentWrapper.classList.remove('ml-64');
+            mainContentWrapper.classList.add('ml-16');
+            header.classList.remove('ml-64');
+            header.classList.add('ml-16');
+        } else {
+            sidebar.classList.remove('sidebar-collapsed');
+            sidebar.classList.add('w-64');
+            sidebar.classList.remove('w-16');
+            mainContentWrapper.classList.remove('ml-16');
+            mainContentWrapper.classList.add('ml-64');
+            header.classList.remove('ml-16');
+            header.classList.add('ml-64');
+        }
+    }
+
+    function toggleUserMenu() {
+        const menu = document.getElementById('userMenu');
+        menu.classList.toggle('hidden');
+    }
+
+    function handleLogout() {
+        // Clear user state
+        AppState.currentUser = null;
+        AppState.currentRole = null;
+
+        // Redirect to login page
+        window.location.href = '../login.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // Initialize GPA Trend Chart
+        const gpaTrendOptions = {
+            series: [{
+                name: "GPA",
+                data: [3.4, 3.5, 3.7]
+            }],
+            chart: {
+                height: 320,
+                type: "line",
+                toolbar: {
+                    show: false
+                },
+                zoom: {
+                    enabled: false
+                }
+            },
+            dataLabels: {
+                enabled: true
+            },
+            stroke: {
+                curve: "smooth",
+                width: 3
+            },
+            grid: {
+                row: {
+                    colors: ["transparent", "transparent"],
+                    opacity: 0.2
+                }
+            },
+            xaxis: {
+                categories: ["Semester 1", "Semester 2", "Current"],
+            },
+            yaxis: {
+                min: 0,
+                max: 4.0,
+                tickAmount: 4
+            },
+            colors: ["#4f46e5"]
+        };
+
+        const gpaTrendChart = new ApexCharts(document.querySelector("#gpa-trend-chart"), gpaTrendOptions);
+        gpaTrendChart.render();
+
+        // Initialize Subject Performance Chart
+        const subjectPerformanceOptions = {
+            series: [{
+                name: "Score",
+                data: [90, 84, 79, 81]
+            }],
+            chart: {
+                height: 320,
+                type: "bar",
+                toolbar: {
+                    show: false
+                }
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 4,
+                    horizontal: false,
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            xaxis: {
+                categories: ["CS101", "DS201", "AI301", "DB401"],
+            },
+            yaxis: {
+                min: 0,
+                max: 100,
+                tickAmount: 5
+            },
+            colors: ["#3b82f6", "#8b5cf6", "#10b981", "#f59e0b"]
+        };
+
+        const subjectPerformanceChart = new ApexCharts(document.querySelector("#subject-performance-chart"), subjectPerformanceOptions);
+        subjectPerformanceChart.render();
+
+        // Initialize Grade Distribution Chart
+        const gradeDistributionOptions = {
+            series: [5, 4, 1, 0],
+            chart: {
+                height: 250,
+                type: "donut",
+            },
+            labels: ["A", "B", "C", "D/F"],
+            colors: ["#10b981", "#3b82f6", "#f59e0b", "#ef4444"],
+            legend: {
+                show: false
+            }
+        };
+
+        const gradeDistributionChart = new ApexCharts(document.querySelector("#grade-distribution-chart"), gradeDistributionOptions);
+        gradeDistributionChart.render();
+
+        // Semester selector functionality
+        document.getElementById('semester-selector').addEventListener('change', function () {
+            const selectedSemester = this.value;
+            console.log('Selected semester:', selectedSemester);
+            // Implementation would load data for the selected semester
+        });
+    });
+</script>
+
+</html>

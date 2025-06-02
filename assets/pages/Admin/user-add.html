@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add User</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+
+<body class="bg-gray-100">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header>
+            <!-- Header content will be included here -->
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow container mx-auto px-4 py-8">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-800">Add New User</h1>
+                <a href="/doctor/user-management" class="btn-secondary">
+                    Back to User Management
+                </a>
+            </div>
+
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <form method="POST" action="" data-validate>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Full Name *</label>
+                            <input type="text" id="name" name="name"
+                                class="form-input w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
+                                required>
+                        </div>
+
+                        <div>
+                            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email Address
+                                *</label>
+                            <input type="email" id="email" name="email"
+                                class="form-input w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
+                                required>
+                        </div>
+
+                        <div>
+                            <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password *</label>
+                            <input type="password" id="password" name="password"
+                                class="form-input w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
+                                required data-min-length="6">
+                            <p class="text-gray-500 text-xs mt-1">Password must be at least 6 characters long</p>
+                        </div>
+
+                        <div>
+                            <label for="confirm_password" class="block text-gray-700 text-sm font-bold mb-2">Confirm
+                                Password *</label>
+                            <input type="password" id="confirm_password" name="confirm_password"
+                                class="form-input w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
+                                required>
+                        </div>
+
+                        <div>
+                            <label for="role_id" class="block text-gray-700 text-sm font-bold mb-2">Role *</label>
+                            <select id="role_id" name="role_id"
+                                class="form-input w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none"
+                                required>
+                                <option value="">Select Role</option>
+                                <!-- Role options will be populated dynamically -->
+                            </select>
+                        </div>
+
+                        <div id="department-container" style="display: none;">
+                            <label for="department_id"
+                                class="block text-gray-700 text-sm font-bold mb-2">Department</label>
+                            <select id="department_id" name="department_id"
+                                class="form-input w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none">
+                                <option value="">Select Department</option>
+                                <!-- Department options will be populated dynamically -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <button type="submit" class="btn-primary">Create User</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <!-- Footer content will be included here -->
+        </footer>
+    </div>
+
+    <script src="/assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const roleSelect = document.getElementById('role_id');
+            const departmentContainer = document.getElementById('department-container');
+
+            roleSelect.addEventListener('change', function () {
+                const selectedOption = roleSelect.options[roleSelect.selectedIndex];
+                const selectedRole = selectedOption.textContent.trim().toLowerCase();
+
+                if (selectedRole === 'student') {
+                    departmentContainer.style.display = 'block';
+                    document.getElementById('department_id').setAttribute('required', 'required');
+                } else {
+                    departmentContainer.style.display = 'none';
+                    document.getElementById('department_id').removeAttribute('required');
+                }
+            });
+
+            roleSelect.dispatchEvent(new Event('change'));
+        });
+    </script>
+</body>
+
+</html>

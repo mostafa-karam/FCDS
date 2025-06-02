@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Schedule - FCDS</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS -->
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        success: {
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            700: '#15803d',
+                        },
+                        warning: {
+                            100: '#fef9c3',
+                            500: '#eab308',
+                            700: '#a16207',
+                        },
+                        danger: {
+                            100: '#fee2e2',
+                            500: '#ef4444',
+                            700: '#b91c1c',
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        .sidebar-transition {
+            transition: width 0.3s ease;
+        }
+
+        .sidebar-collapsed {
+            width: 4rem !important;
+        }
+
+        .sidebar-collapsed .sidebar-content,
+        .sidebar-collapsed .sidebar-label {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar-content,
+        .sidebar-label {
+            transition: opacity 0.2s;
+        }
+
+        .sidebar-collapsed .sidebar-nav-icon {
+            margin-right: 0 !important;
+            justify-content: center;
+        }
+
+        .sidebar-collapsed .sidebar-nav-label {
+            display: none;
+        }
+
+        .glass-effect {
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s ease;
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .typing-indicator {
+            animation: typing 1.5s infinite;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .header-fixed-height {
+            height: 72px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-900 antialiased min-h-screen flex flex-col">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="bg-white shadow-lg sidebar-transition w-64 fixed h-full z-40 flex flex-col">
+        <div class="p-6 border-b border-gray-200 sidebar-content">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-primary-900 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-graduation-cap text-white"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-gray-800">FCDS</h2>
+                    <p class="text-xs text-gray-500" id="userRole">Student</p>
+                </div>
+            </div>
+        </div>
+        <nav class="mt-6 flex-1" id="sidebarNav">
+            <!-- Dynamic navigation will be inserted here -->
+        </nav>
+    </aside>
+    <!-- Top Navbar -->
+    <header id="mainHeader"
+        class="bg-white shadow-sm border-b border-gray-200 px-6 py-4 fixed left-0 right-0 top-0 z-30 ml-64 transition-all duration-300 flex items-center justify-between header-fixed-height">
+        <div class="flex items-center space-x-4">
+            <button id="sidebarToggle"
+                class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                aria-label="Toggle sidebar" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="text-2xl font-bold text-gray-800" id="pageTitle">Class Schedule</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+            <!-- Search -->
+            <div class="relative hidden md:block">
+                <input type="text" placeholder="Search..."
+                    class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 bg-gray-100 text-gray-800"
+                    aria-label="Search">
+                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+            <!-- Notifications -->
+            <button class="relative p-2 text-gray-500 hover:bg-gray-100 rounded-lg" aria-label="Notifications">
+                <i class="fas fa-bell"></i>
+                <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+            <!-- User Menu -->
+            <div class="relative">
+                <button id="userMenuToggle"
+                    class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 focus:outline-none"
+                    onclick="toggleUserMenu()">
+                    <div class="w-8 h-8 bg-primary-900 rounded-full flex items-center justify-center">
+                        <span class="text-white text-sm font-medium" id="userInitials">SW</span>
+                    </div>
+                    <span class="hidden md:block text-sm font-medium text-gray-700" id="userName">Sophia Wilson</span>
+                    <i class="fas fa-chevron-down text-xs"></i>
+                </button>
+                <div id="userMenu"
+                    class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden">
+                    <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                    <hr class="border-gray-200">
+                    <button id="logoutBtn"
+                        class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                        onclick="handleLogout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Main Content -->
+    <main class="p-6 ml-64 pt-24 transition-all duration-300" id="mainContentWrapper">
+        <div class="mb-8">
+            <h1 class="text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">Class Schedule</h1>
+            <p class="text-gray-600 text-lg">View your weekly timetable and upcoming classes</p>
+        </div>
+
+        <!-- Week Navigation & Download -->
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-8 space-y-4 md:space-y-0">
+            <!-- Week Navigation -->
+            <div class="flex items-center space-x-4">
+                <button class="btn p-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700" title="Previous week">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="text-gray-900 font-semibold text-lg">
+                    <span id="current-week">July 10 - July 16, 2025</span>
+                </div>
+                <button class="btn p-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700" title="Next week">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="btn p-2 rounded-md bg-primary-600 hover:bg-primary-700 shadow" title="Current week">
+                    Today
+                </button>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center space-x-2">
+                <button
+                    class="btn flex items-center px-4 py-2 bg-success-600 hover:bg-success-700  rounded-md text-sm font-medium shadow"
+                    title="Export schedule to iCal">
+                    <i class="fas fa-calendar-alt mr-2"></i> Export Calendar
+                </button>
+                <button
+                    class="btn flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700  rounded-md text-sm font-medium shadow"
+                    title="Print schedule">
+                    <i class="fas fa-print mr-2"></i> Print
+                </button>
+                <select id="schedule-view"
+                    class="rounded-md border-gray-300 text-gray-700 bg-white px-3 py-2 text-sm focus:border-primary-500 focus:ring-primary-500 shadow"
+                    aria-label="Change schedule view" title="Change schedule view">
+                    <option value="week">Week View</option>
+                    <option value="list">List View</option>
+                    <option value="month">Month View</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Week Schedule Grid -->
+        <div class="card overflow-hidden mb-8">
+            <div class="schedule-grid min-w-full overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <!-- Table Header (Days) -->
+                    <thead>
+                        <tr>
+                            <th
+                                class="w-20 px-2 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider bg-gray-100">
+                                Time
+                            </th>
+                            <th
+                                class="px-2 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider bg-gray-100">
+                                Monday<br><span class="text-xs font-normal">Jul 10</span>
+                            </th>
+                            <th
+                                class="px-2 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider bg-gray-100">
+                                Tuesday<br><span class="text-xs font-normal">Jul 11</span>
+                            </th>
+                            <th
+                                class="px-2 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider bg-gray-100">
+                                Wednesday<br><span class="text-xs font-normal">Jul 12</span>
+                            </th>
+                            <th
+                                class="px-2 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider bg-gray-100">
+                                Thursday<br><span class="text-xs font-normal">Jul 13</span>
+                            </th>
+                            <th
+                                class="px-2 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider bg-gray-100">
+                                Friday<br><span class="text-xs font-normal">Jul 14</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-100">
+                        <!-- 9:00 - 10:30 AM -->
+                        <tr>
+                            <td class="px-2 py-4 whitespace-nowrap text-xs text-gray-500 font-medium">
+                                9:00 - 10:30 AM
+                            </td>
+                            <!-- Monday -->
+                            <td class="px-2 py-1">
+                                <div class="rounded-md bg-primary-100 p-2 h-full">
+                                    <div class="text-xs font-medium text-primary-800">CS101</div>
+                                    <div class="text-xs text-primary-700">Introduction to
+                                        Programming</div>
+                                    <div class="text-xs text-primary-600 mt-1">Dr. John Smith
+                                    </div>
+                                    <div class="text-xs text-primary-600">Room 101</div>
+                                </div>
+                            </td>
+                            <!-- Tuesday -->
+                            <td class="px-2 py-1">
+                                <!-- No class -->
+                            </td>
+                            <!-- Wednesday -->
+                            <td class="px-2 py-1">
+                                <div class="rounded-md bg-primary-100 p-2 h-full">
+                                    <div class="text-xs font-medium text-primary-800">CS101</div>
+                                    <div class="text-xs text-primary-700">Introduction to
+                                        Programming</div>
+                                    <div class="text-xs text-primary-600 mt-1">Dr. John Smith
+                                    </div>
+                                    <div class="text-xs text-primary-600">Room 101</div>
+                                </div>
+                            </td>
+                            <!-- Thursday -->
+                            <td class="px-2 py-1">
+                                <!-- No class -->
+                            </td>
+                            <!-- Friday -->
+                            <td class="px-2 py-1">
+                                <div class="rounded-md bg-primary-100 p-2 h-full">
+                                    <div class="text-xs font-medium text-primary-800">CS101</div>
+                                    <div class="text-xs text-primary-700">Introduction to
+                                        Programming</div>
+                                    <div class="text-xs text-primary-600 mt-1">Dr. John Smith
+                                    </div>
+                                    <div class="text-xs text-primary-600">Room 101</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- 10:30 - 12:00 PM -->
+                        <tr>
+                            <td class="px-2 py-4 whitespace-nowrap text-xs text-gray-500 font-medium">
+                                10:30 - 12:00 PM
+                            </td>
+                            <!-- Monday -->
+                            <td class="px-2 py-1">
+                                <!-- No class -->
+                            </td>
+                            <!-- Tuesday -->
+                            <td class="px-2 py-1">
+                                <div class="rounded-md bg-success-100 dark:bg-success-900 p-2 h-full">
+                                    <div class="text-xs font-medium text-success-800 dark:text-success-200">AI301</div>
+                                    <div class="text-xs text-success-700 dark:text-success-300">Machine Learning
+                                        Fundamentals</div>
+                                    <div class="text-xs text-success-600 dark:text-success-400 mt-1">Dr. Sarah Johnson
+                                    </div>
+                                    <div class="text-xs text-success-600 dark:text-success-400">Room 305</div>
+                                </div>
+                            </td>
+                            <!-- Wednesday -->
+                            <td class="px-2 py-1">
+                                <!-- No class -->
+                            </td>
+                            <!-- Thursday -->
+                            <td class="px-2 py-1">
+                                <div class="rounded-md bg-success-100 dark:bg-success-900 p-2 h-full">
+                                    <div class="text-xs font-medium text-success-800 dark:text-success-200">AI301</div>
+                                    <div class="text-xs text-success-700 dark:text-success-300">Machine Learning
+                                        Fundamentals</div>
+                                    <div class="text-xs text-success-600 dark:text-success-400 mt-1">Dr. Sarah Johnson
+                                    </div>
+                                    <div class="text-xs text-success-600 dark:text-success-400">Room 305</div>
+                                </div>
+                            </td>
+                            <!-- Friday -->
+                            <td class="px-2 py-1">
+                                <!-- No class -->
+                            </td>
+                        </tr>
+
+                        <!-- 12:00 - 1:00 PM -->
+                        <tr>
+                            <td
+                                class="px-2 py-4 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400 font-medium">
+                                12:00 - 1:00 PM
+                            </td>
+                            <td colspan="5" class="px-2 py-1">
+                                <div class="rounded-md bg-gray-100 dark:bg-gray-700 p-2 text-center">
+                                    <div class="text-xs font-medium text-gray-800 dark:text-gray-200">LUNCH BREAK</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- 1:00 - 2:30 PM -->
+                        <tr>
+                            <td
+                                class="px-2 py-4 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400 font-medium">
+                                1:00 - 2:30 PM
+                            </td>
+                            <!-- Monday -->
+                            <td class="px-2 py-1">
+                                <div class="rounded-md bg-secondary-100 dark:bg-secondary-900 p-2 h-full">
+                                    <div class="text-xs font-medium text-secondary-800 dark:text-secondary-200">DS201
+                                    </div>
+                                    <div class="text-xs text-secondary-700 dark:text-secondary-300">Data Structures and
+                                        Algorithms</div>
+                                    <div class="text-xs text-secondary-600 dark:text-secondary-400 mt-1">Dr. John Smith
+                                    </div>
+                                    <div class="text-xs text-secondary-600 dark:text-secondary-400">Room 201</div>
+                                </div>
+                            </td>
+                            <!-- Tuesday -->
+                            <td class="px-2 py-1">
+                                <!-- No class -->
+                            </td>
+                            <!-- Wednesday -->
+                            <td class="px-2 py-1">
+                                <div class="rounded-md bg-secondary-100 dark:bg-secondary-900 p-2 h-full">
+                                    <div class="text-xs font-medium text-secondary-800 dark:text-secondary-200">DS201
+                                    </div>
+                                    <div class="text-xs text-secondary-700 dark:text-secondary-300">Data Structures and
+                                        Algorithms</div>
+                                    <div class="text-xs text-secondary-600 dark:text-secondary-400 mt-1">Dr. John Smith
+                                    </div>
+                                    <div class="text-xs text-secondary-600 dark:text-secondary-400">Room 201</div>
+                                </div>
+                            </td>
+                            <!-- Thursday -->
+                            <td class="px-2 py-1">
+                                <!-- No class -->
+                            </td>
+                            <!-- Friday -->
+                            <td class="px-2 py-1">
+                                <div class="rounded-md bg-secondary-100 dark:bg-secondary-900 p-2 h-full">
+                                    <div class="text-xs font-medium text-secondary-800 dark:text-secondary-200">DS201
+                                    </div>
+                                    <div class="text-xs text-secondary-700 dark:text-secondary-300">Data Structures and
+                                        Algorithms</div>
+                                    <div class="text-xs text-secondary-600 dark:text-secondary-400 mt-1">Dr. John Smith
+                                    </div>
+                                    <div class="text-xs text-secondary-600 dark:text-secondary-400">Room 201</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- 2:30 - 4:00 PM -->
+                        <tr>
+                            <td
+                                class="px-2 py-4 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400 font-medium">
+                                2:30 - 4:00 PM
+                            </td>
+                            <!-- Monday -->
+                            <td class="px-2 py-1">
+                                <!-- No class -->
+                            </td>
+                            <!-- Tuesday -->
+                            <td class="px-2 py-1">
+                                <div class="rounded-md bg-warning-100 dark:bg-warning-900 p-2 h-full">
+                                    <div class="text-xs font-medium text-warning-800 dark:text-warning-200">DB401</div>
+                                    <div class="text-xs text-warning-700 dark:text-warning-300">Database Systems</div>
+                                    <div class="text-xs text-warning-600 dark:text-warning-400 mt-1">Dr. Sarah Johnson
+                                    </div>
+                                    <div class="text-xs text-warning-600 dark:text-warning-400">Room 405</div>
+                                </div>
+                            </td>
+                            <!-- Wednesday -->
+                            <td class="px-2 py-1">
+                                <!-- No class -->
+                            </td>
+                            <!-- Thursday -->
+                            <td class="px-2 py-1">
+                                <div class="rounded-md bg-warning-100 dark:bg-warning-900 p-2 h-full">
+                                    <div class="text-xs font-medium text-warning-800 dark:text-warning-200">DB401</div>
+                                    <div class="text-xs text-warning-700 dark:text-warning-300">Database Systems</div>
+                                    <div class="text-xs text-warning-600 dark:text-warning-400 mt-1">Dr. Sarah Johnson
+                                    </div>
+                                    <div class="text-xs text-warning-600 dark:text-warning-400">Room 405</div>
+                                </div>
+                            </td>
+                            <!-- Friday -->
+                            <td class="px-2 py-1">
+                                <!-- No class -->
+                            </td>
+                        </tr>
+
+                        <!-- 4:00 - 5:30 PM -->
+                        <tr>
+                            <td
+                                class="px-2 py-4 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400 font-medium">
+                                4:00 - 5:30 PM
+                            </td>
+                            <!-- Monday -->
+                            <td class="px-2 py-1">
+                                <!-- No class -->
+                            </td>
+                            <!-- Tuesday -->
+                            <td class="px-2 py-1">
+                                <!-- No class -->
+                            </td>
+                            <!-- Wednesday -->
+                            <td class="px-2 py-1">
+                                <div class="rounded-md bg-info-100 dark:bg-info-900 p-2 h-full">
+                                    <div class="text-xs font-medium text-info-800 dark:text-info-200">PRAC101</div>
+                                    <div class="text-xs text-info-700 dark:text-info-300">Programming Lab</div>
+                                    <div class="text-xs text-info-600 dark:text-info-400 mt-1">Dr. John Smith</div>
+                                    <div class="text-xs text-info-600 dark:text-info-400">Computer Lab 1</div>
+                                </div>
+                            </td>
+                            <!-- Thursday -->
+                            <td class="px-2 py-1">
+                                <!-- No class -->
+                            </td>
+                            <!-- Friday -->
+                            <td class="px-2 py-1">
+                                <div class="rounded-md bg-info-100 dark:bg-info-900 p-2 h-full">
+                                    <div class="text-xs font-medium text-info-800 dark:text-info-200">PRAC101</div>
+                                    <div class="text-xs text-info-700 dark:text-info-300">Programming Lab</div>
+                                    <div class="text-xs text-info-600 dark:text-info-400 mt-1">Dr. John Smith</div>
+                                    <div class="text-xs text-info-600 dark:text-info-400">Computer Lab 1</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Upcoming Classes -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Today's Classes -->
+            <div class="card">
+                <div class="p-6 border-b border-gray-100">
+                    <h2 class="text-xl font-semibold text-gray-900">Today's Classes</h2>
+                </div>
+                <div class="p-6">
+                    <ul class="divide-y divide-gray-100">
+                        <li class="py-4 flex justify-between items-center">
+                            <div>
+                                <p class="text-base font-medium text-gray-900">CS101 - Introduction to Programming</p>
+                                <p class="text-xs text-gray-500">9:00 - 10:30 AM • Room 101</p>
+                                <p class="text-xs text-gray-500">Dr. John Smith</p>
+                            </div>
+                            <span
+                                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 shadow-sm">
+                                <span class="w-2 h-2 mr-1 bg-green-500 rounded-full legend-dot"></span>
+                                In Progress
+                            </span>
+                        </li>
+                        <li class="py-4 flex justify-between items-center">
+                            <div>
+                                <p class="text-base font-medium text-gray-900">DS201 - Data Structures and Algorithms
+                                </p>
+                                <p class="text-xs text-gray-500">1:00 - 2:30 PM • Room 201</p>
+                                <p class="text-xs text-gray-500">Dr. John Smith</p>
+                            </div>
+                            <span
+                                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 shadow-sm">
+                                Upcoming
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Online Classes -->
+            <div class="card">
+                <div class="p-6 border-b border-gray-100">
+                    <h2 class="text-xl font-semibold text-gray-900">Online Sessions</h2>
+                </div>
+                <div class="p-6">
+                    <ul class="divide-y divide-gray-100">
+                        <li class="py-4 flex justify-between items-center">
+                            <div>
+                                <p class="text-base font-medium text-gray-900">AI301 - Machine Learning Tutorial</p>
+                                <p class="text-xs text-gray-500">Tomorrow • 5:00 - 6:00 PM</p>
+                                <p class="text-xs text-gray-500">Dr. Sarah Johnson</p>
+                            </div>
+                            <a href="#" class="inline-flex items-center">
+                                <i class="fas fa-video mr-1"></i> Join
+                            </a>
+                        </li>
+                        <li class="py-4 flex justify-between items-center">
+                            <div>
+                                <p class="text-base font-medium text-gray-900">DB401 - Database Systems Review</p>
+                                <p class="text-xs text-gray-500">Wednesday • 6:00 - 7:00 PM</p>
+                                <p class="text-xs text-gray-500">Dr. Sarah Johnson</p>
+                            </div>
+                            <a href="#" class="btn inline-flex items-center">
+                                <i class="fas fa-video mr-1"></i> Join
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Legend -->
+        <div class="card p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Course Legend</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="flex items-center">
+                    <div class="w-4 h-4 bg-primary-500 rounded legend-dot mr-2"></div>
+                    <span class="text-sm text-gray-700">CS101 - Introduction to Programming</span>
+                </div>
+                <div class="flex items-center">
+                    <div class="w-4 h-4 bg-secondary-500 rounded legend-dot mr-2"></div>
+                    <span class="text-sm text-gray-700">DS201 - Data Structures and Algorithms</span>
+                </div>
+                <div class="flex items-center">
+                    <div class="w-4 h-4 bg-success-500 rounded legend-dot mr-2"></div>
+                    <span class="text-sm text-gray-700">AI301 - Machine Learning Fundamentals</span>
+                </div>
+                <div class="flex items-center">
+                    <div class="w-4 h-4 bg-warning-500 rounded legend-dot mr-2"></div>
+                    <span class="text-sm text-gray-700">DB401 - Database Systems</span>
+                </div>
+                <div class="flex items-center">
+                    <div class="w-4 h-4 bg-info-500 rounded legend-dot mr-2"></div>
+                    <span class="text-sm text-gray-700">PRAC101 - Programming Lab</span>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 py-4 mt-auto">
+        <div class="container mx-auto text-center">
+            <p class="text-sm">&copy; 2025 FCDS. All rights reserved.</p>
+            <p class="text-xs">Designed with <i class="fas fa-heart text-red-500"></i> by FCDS Team</p>
+        </div>
+    </footer>
+</body>
+
+
+<script>
+    // Global state management
+    const AppState = {
+        currentUser: null,
+        currentRole: null,
+        sidebarCollapsed: true,
+    };
+
+    // Role-based navigation configurations
+    const NavigationConfig = {
+        'student': [
+            { icon: 'fas fa-tachometer-alt', label: 'Dashboard', id: 'dashboard', href: 'student-db.html' },
+            { icon: 'fas fa-calendar-check', label: 'Attendance', id: 'attendance', href: 'attendance.html' },
+            { icon: 'fas fa-book', label: 'Courses', id: 'courses', href: 'courses.html' },
+            { icon: 'fas fa-credit-card', label: 'Fees & Payments', id: 'fees', href: 'fees-payments.html' },
+            { icon: 'fas fa-graduation-cap', label: 'Grades', id: 'grades', href: 'grades.html' },
+            { icon: 'fas fa-calculator', label: 'CGPA Calculator', id: 'cgpa', href: 'cgpa-calculator.html' },
+            { icon: 'fas fa-book-open', label: 'Course Materials', id: 'materials', href: 'course-materials.html' },
+            { icon: 'fas fa-calendar', label: 'Schedule', id: 'schedule', href: 'class-schedule.html' },
+            { icon: 'fas fa-clipboard-list', label: 'Assignments', id: 'assignments', href: 'assignments.html' },
+            { icon: 'fas fa-certificate', label: 'Certificates', id: 'certificates', href: 'certificates.html' },
+            { icon: 'fas fa-comments', label: 'Grievance Form', id: 'chat', href: 'grievance-form.html' },
+            { icon: 'fas fa-chart-line', label: 'Progress', id: 'progress', href: 'progress.html' },
+            { icon: 'fas fa-user', label: 'Profile', id: 'profile', href: 'profile.html' }
+        ]
+    };
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function () {
+        AppState.currentRole = 'student'; // Ensure role is set before loading navigation
+        loadNavigation();
+        // Apply sidebar collapsed state on page load
+        if (AppState.sidebarCollapsed) {
+            const sidebar = document.getElementById('sidebar');
+            const mainContentWrapper = document.getElementById('mainContentWrapper');
+            const header = document.getElementById('mainHeader');
+
+            sidebar.classList.add('sidebar-collapsed');
+            sidebar.classList.remove('w-64');
+            sidebar.classList.add('w-16');
+            mainContentWrapper.classList.remove('ml-64');
+            mainContentWrapper.classList.add('ml-16');
+            header && header.classList.remove('ml-64');
+            header && header.classList.add('ml-16');
+        }
+        initializeApp && initializeApp(); // Call initializeApp if defined
+    });
+    function loadNavigation() {
+        const nav = NavigationConfig[AppState.currentRole];
+        const navContainer = document.getElementById('sidebarNav');
+        navContainer.innerHTML = nav.map(item => `
+                <a href="${item.href}" class="nav-item flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 transition-colors ${item.id === 'schedule' ? 'bg-blue-50 text-blue-600 border-r-2 border-blue-600' : ''}" title="${item.label}">
+                    <span class="sidebar-nav-icon flex items-center justify-center w-6"><i class="${item.icon}"></i></span>
+                    <span class="sidebar-nav-label ml-3">${item.label}</span>
+                </a>
+            `).join('');
+    }
+    function loadPage(pageId) {
+        // Update active nav
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('bg-blue-50', 'text-blue-600', 'border-r-2', 'border-blue-600');
+        });
+        event.target.closest('.nav-item').classList.add('bg-blue-50', 'text-blue-600', 'border-r-2', 'border-blue-600');
+
+        // Update page title
+        const navItem = NavigationConfig[AppState.currentRole].find(item => item.id === pageId);
+        document.getElementById('pageTitle').textContent = navItem.label;
+
+        // Load content
+        loadDashboardContent(pageId);
+    }
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const mainContentWrapper = document.getElementById('mainContentWrapper');
+        const header = document.getElementById('mainHeader');
+        AppState.sidebarCollapsed = !AppState.sidebarCollapsed;
+
+        if (AppState.sidebarCollapsed) {
+            sidebar.classList.add('sidebar-collapsed');
+            sidebar.classList.remove('w-64');
+            sidebar.classList.add('w-16');
+            mainContentWrapper.classList.remove('ml-64');
+            mainContentWrapper.classList.add('ml-16');
+            header.classList.remove('ml-64');
+            header.classList.add('ml-16');
+        } else {
+            sidebar.classList.remove('sidebar-collapsed');
+            sidebar.classList.add('w-64');
+            sidebar.classList.remove('w-16');
+            mainContentWrapper.classList.remove('ml-16');
+            mainContentWrapper.classList.add('ml-64');
+            header.classList.remove('ml-16');
+            header.classList.add('ml-64');
+        }
+    }
+
+    function toggleUserMenu() {
+        const menu = document.getElementById('userMenu');
+        menu.classList.toggle('hidden');
+    }
+
+    function handleLogout() {
+        // Clear user state
+        AppState.currentUser = null;
+        AppState.currentRole = null;
+
+        // Redirect to login page
+        window.location.href = '../login.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // Today button functionality
+        document.querySelector('button[title="Current week"]').addEventListener('click', function () {
+            document.getElementById('current-week').textContent = 'July 10 - July 16, 2025';
+            // Implementation would reset to current week
+        });
+
+        // Week navigation
+        document.querySelector('button[title="Previous week"]').addEventListener('click', function () {
+            document.getElementById('current-week').textContent = 'July 3 - July 9, 2025';
+            // Implementation would load previous week data
+        });
+
+        document.querySelector('button[title="Next week"]').addEventListener('click', function () {
+            document.getElementById('current-week').textContent = 'July 17 - July 23, 2025';
+            // Implementation would load next week data
+        });
+    });
+</script>
+
+</html>

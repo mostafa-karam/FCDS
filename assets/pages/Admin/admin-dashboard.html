@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - FCDS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="stylesheet" href="../../css/tailwind-custom.css">
+    <style>
+        /* Subtle background for main area */
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        /* Card shadow and border improvements */
+        .dashboard-card {
+            box-shadow: 0 2px 8px 0 rgba(30, 41, 59, 0.06), 0 1.5px 4px 0 rgba(30, 41, 59, 0.03);
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            transition: box-shadow 0.2s, border-color 0.2s;
+        }
+
+        .dashboard-card:hover {
+            box-shadow: 0 4px 16px 0 rgba(30, 41, 59, 0.10), 0 3px 8px 0 rgba(30, 41, 59, 0.06);
+            border-color: #cbd5e1;
+        }
+
+        /* Headings */
+        .dashboard-title {
+            color: #0f172a;
+            letter-spacing: -0.01em;
+        }
+
+        /* Button improvements */
+        .btn-primary {
+            background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
+            color: #fff;
+            border-radius: 0.375rem;
+            padding: 0.5rem 1.25rem;
+            font-weight: 600;
+            box-shadow: 0 1px 2px 0 rgba(30, 41, 59, 0.04);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #1d4ed8 0%, #2563eb 100%);
+            box-shadow: 0 2px 8px 0 rgba(30, 41, 59, 0.08);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #2563eb;
+            border-radius: 0.375rem;
+            padding: 0.5rem 1.25rem;
+            font-weight: 600;
+            border: 1px solid #e5e7eb;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e7ef;
+            color: #1d4ed8;
+        }
+
+        /* Subtle divider */
+        .dashboard-divider {
+            border-top: 1px solid #e5e7eb;
+            margin: 1.5rem 0;
+        }
+
+        /* Card icon backgrounds */
+        .bg-primary-100 {
+            background: #e0e7ff !important;
+        }
+
+        .bg-secondary-100 {
+            background: #fce7f3 !important;
+        }
+
+        .bg-success-100 {
+            background: #dcfce7 !important;
+        }
+
+        .bg-warning-100 {
+            background: #fef9c3 !important;
+        }
+
+        .bg-danger-100 {
+            background: #fee2e2 !important;
+        }
+
+        /* Card icon colors */
+        .text-primary-600 {
+            color: #2563eb !important;
+        }
+
+        .text-secondary-600 {
+            color: #db2777 !important;
+        }
+
+        .text-success-600 {
+            color: #16a34a !important;
+        }
+
+        .text-warning-600 {
+            color: #ca8a04 !important;
+        }
+
+        .text-danger-600 {
+            color: #dc2626 !important;
+        }
+
+        /* Tag colors */
+        .text-danger-800 {
+            color: #991b1b !important;
+        }
+
+        .text-warning-800 {
+            color: #854d0e !important;
+        }
+
+        .text-success-800 {
+            color: #166534 !important;
+        }
+
+        /* Card border radius */
+        .rounded-lg {
+            border-radius: 0.75rem !important;
+        }
+
+        /* Subtle hover for links */
+        a.text-primary-600:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white antialiased min-h-screen flex flex-col">
+    
+
+    <!-- Main Content -->
+    <div class="main-content p-4 sm:p-6 lg:p-8 ml-0 md:ml-64 transition-all duration-300 mt-16">
+        <!-- Admin Header Section -->
+        <div class="dashboard-header mb-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h1 class="dashboard-title text-2xl font-bold mb-2">Admin Dashboard</h1>
+                    <p class="dashboard-subtitle">System-wide administration tools and insights</p>
+                </div>
+                <div class="mt-4 md:mt-0 flex space-x-3">
+                    <button id="view-audit-logs" class="btn btn-secondary flex items-center" title="View Audit Logs">
+                        <i class="fas fa-history mr-2"></i> View Audit Logs
+                    </button>
+                    <button id="system-settings" class="btn btn-primary flex items-center" title="System Settings">
+                        <i class="fas fa-cog mr-2"></i> System Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <!-- Users -->
+            <div class="dashboard-card">
+                <div class="stat-card">
+                    <div class="stat-icon bg-primary-soft text-primary">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <p class="stat-label">Total Users</p>
+                        <p class="stat-value">3,456</p>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up mr-1"></i> 12% from last month
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Courses -->
+            <div class="dashboard-card">
+                <div class="stat-card">
+                    <div class="stat-icon bg-secondary-soft text-secondary">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="stat-content">
+                        <p class="stat-label">Active Courses</p>
+                        <p class="stat-value">42</p>
+                        <div class="stat-change">
+                            5 new courses this semester
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Announcements -->
+            <div class="dashboard-card">
+                <div class="stat-card">
+                    <div class="stat-icon bg-success-soft text-success">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <div class="stat-content">
+                        <p class="stat-label">Announcements</p>
+                        <p class="stat-value">18</p>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up mr-1"></i> 3 published this week
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Status -->
+            <div class="dashboard-card">
+                <div class="stat-card">
+                    <div class="stat-icon bg-success-soft text-success">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="stat-content">
+                        <p class="stat-label">System Status</p>
+                        <p class="stat-value">Healthy</p>
+                        <div class="stat-change">
+                            Last checked: 5 mins ago
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Tiles -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+            <!-- User Management -->
+            <div class="dashboard-card overflow-hidden">
+                <div class="card-header">
+                    <div class="flex items-center">
+                        <div class="bg-primary-soft text-primary rounded-full p-3 mr-4">
+                            <i class="fas fa-user-cog"></i>
+                        </div>
+                        <h3 class="card-title">User Management</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Manage user accounts, roles, and permissions across
+                        the system.</p>
+                    <div class="space-y-2">
+                        <div class="flex items-center text-sm">
+                            <span class="w-32 text-gray-500 dark:text-gray-400">Total Users:</span>
+                            <span class="font-medium">3,456</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="w-32 text-gray-500 dark:text-gray-400">Active Now:</span>
+                            <span class="font-medium text-success">147</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="w-32 text-gray-500 dark:text-gray-400">New This Week:</span>
+                            <span class="font-medium text-primary">28</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-5 py-3 bg-gray-50 dark:bg-gray-800 border-top">
+                    <a href="user-management.html" class="text-primary hover:text-primary-dark text-sm font-medium">
+                        Manage Users <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Announcements -->
+            <div class="dashboard-card overflow-hidden">
+                <div class="card-header">
+                    <div class="flex items-center">
+                        <div class="bg-secondary-soft text-secondary rounded-full p-3 mr-4">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <h3 class="card-title">Announcements</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Create and manage announcements with multimedia
+                        support.</p>
+                    <div class="space-y-2">
+                        <div class="flex items-center text-sm">
+                            <span class="w-32 text-gray-500 dark:text-gray-400">Published:</span>
+                            <span class="font-medium">18</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="w-32 text-gray-500 dark:text-gray-400">Pinned:</span>
+                            <span class="font-medium text-warning">3</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="w-32 text-gray-500 dark:text-gray-400">With Media:</span>
+                            <span class="font-medium text-primary">12</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-5 py-3 bg-gray-50 dark:bg-gray-800 border-top">
+                    <a href="announcements.html" class="text-primary hover:text-primary-dark text-sm font-medium">
+                        Manage Announcements <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Course Management -->
+            <div class="dashboard-card overflow-hidden">
+                <div class="card-header">
+                    <div class="flex items-center">
+                        <div class="bg-success-soft text-success rounded-full p-3 mr-4">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h3 class="card-title">Course Management</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Add, edit, and manage courses, schedule exams and
+                        classes.</p>
+                    <div class="space-y-2">
+                        <div class="flex items-center text-sm">
+                            <span class="w-32 text-gray-500 dark:text-gray-400">Total Courses:</span>
+                            <span class="font-medium">42</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="w-32 text-gray-500 dark:text-gray-400">Upcoming Exams:</span>
+                            <span class="font-medium text-warning">8</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="w-32 text-gray-500 dark:text-gray-400">New Enrollments:</span>
+                            <span class="font-medium text-primary">123</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-5 py-3 bg-gray-50 dark:bg-gray-800 border-top">
+                    <a href="courses.html" class="text-primary hover:text-primary-dark text-sm font-medium">
+                        Manage Courses <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Certificate Builder -->
+            <div class="dashboard-card overflow-hidden">
+                <div class="card-header">
+                    <div class="flex items-center">
+                        <div class="bg-warning-soft text-warning rounded-full p-3 mr-4">
+                            <i class="fas fa-certificate"></i>
+                        </div>
+                        <h3 class="card-title">Certificate Builder</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Create and issue official certificates for
+                        students.</p>
+                    <div class="space-y-2">
+                        <div class="flex items-center text-sm">
+                            <span class="w-32 text-gray-500 dark:text-gray-400">Templates:</span>
+                            <span class="font-medium">6</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="w-32 text-gray-500 dark:text-gray-400">Issued This Month:</span>
+                            <span class="font-medium text-success">42</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="w-32 text-gray-500 dark:text-gray-400">Pending:</span>
+                            <span class="font-medium text-warning">12</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-5 py-3 bg-gray-50 dark:bg-gray-800 border-top">
+                    <a href="certificates.html" class="text-primary hover:text-primary-dark text-sm font-medium">
+                        Manage Certificates <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Analytics Dashboard -->
+            <div class="dashboard-card overflow-hidden">
+                <div class="card-header">
+                    <div class="flex items-center">
+                        <div class="bg-primary-soft text-primary rounded-full p-3 mr-4">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="card-title">Analytics</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">View detailed analytics on attendance, performance,
+                        and more.</p>
+                    <div class="space-y-2">
+                        <div class="flex items-center text-sm">
+                            <span class="w-32 text-gray-500 dark:text-gray-400">Avg. Attendance:</span>
+                            <span class="font-medium text-success">92%</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="w-32 text-gray-500 dark:text-gray-400">Avg. GPA:</span>
+                            <span class="font-medium text-primary">3.4</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="w-32 text-gray-500 dark:text-gray-400">Reports Created:</span>
+                            <span class="font-medium">28</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-5 py-3 bg-gray-50 dark:bg-gray-800 border-top">
+                    <a href="analytics.html" class="text-primary hover:text-primary-dark text-sm font-medium">
+                        View Analytics <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Permission Editor -->
+            <div class="dashboard-card overflow-hidden">
+                <div class="card-header">
+                    <div class="flex items-center">
+                        <div class="bg-danger-soft text-danger rounded-full p-3 mr-4">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="card-title">Permission Editor</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Configure role-based permissions for system access.
+                    </p>
+                    <div class="space-y-2">
+                        <div class="flex items-center text-sm">
+                            <span class="w-32 text-gray-500 dark:text-gray-400">Roles:</span>
+                            <span class="font-medium">6</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="w-32 text-gray-500 dark:text-gray-400">Permission Sets:</span>
+                            <span class="font-medium text-primary">24</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <span class="w-32 text-gray-500 dark:text-gray-400">Last Updated:</span>
+                            <span class="font-medium text-gray-500 dark:text-gray-400">2 days ago</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-5 py-3 bg-gray-50 dark:bg-gray-800 border-top">
+                    <a href="permissions.html" class="text-primary hover:text-primary-dark text-sm font-medium">
+                        Manage Permissions <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Insights -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Recent System Activity -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">Recent System Activity</h3>
+                    <a href="audit-logs.html" class="text-primary hover:text-primary-dark text-sm font-medium">
+                        View All <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="space-y-4">
+                        <div class="activity-item">
+                            <div class="activity-icon bg-primary-soft text-primary">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-title">New User Created</p>
+                                <p class="activity-subtitle">Dr. Robert Kim (Doctor) was added to the system</p>
+                                <p class="activity-time">10 minutes ago by Admin</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon bg-success-soft text-success">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-title">Course Updated</p>
+                                <p class="activity-subtitle">AI501: Advanced Neural Networks was modified</p>
+                                <p class="activity-time">1 hour ago by Dr. Sarah Johnson</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon bg-warning-soft text-warning">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-title">Permission Changed</p>
+                                <p class="activity-subtitle">Doctor Assistant role permissions were updated</p>
+                                <p class="activity-time">2 hours ago by Admin</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon bg-danger-soft text-danger">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-title">System Alert</p>
+                                <p class="activity-subtitle">Database backup completed successfully</p>
+                                <p class="activity-time">5 hours ago by System</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task Management -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">Administrative Tasks</h3>
+                    <a href="tasks.html" class="text-primary hover:text-primary-dark text-sm font-medium">
+                        View All <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="space-y-3">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="admin-task-1"
+                                class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                            <div class="ml-3 flex-grow">
+                                <label for="admin-task-1" class="text-sm font-medium">Review user account
+                                    requests</label>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Due today</p>
+                            </div>
+                            <span class="ml-auto badge badge-danger">
+                                High
+                            </span>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="admin-task-2"
+                                class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                            <div class="ml-3 flex-grow">
+                                <label for="admin-task-2" class="text-sm font-medium">Finalize semester
+                                    schedule</label>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Due in 2 days</p>
+                            </div>
+                            <span class="ml-auto badge badge-warning">
+                                Medium
+                            </span>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="admin-task-3"
+                                class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                            <div class="ml-3 flex-grow">
+                                <label for="admin-task-3" class="text-sm font-medium">Update system
+                                    documentation</label>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Due in 5 days</p>
+                            </div>
+                            <span class="ml-auto badge badge-success">
+                                Low
+                            </span>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="admin-task-4"
+                                class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                            <div class="ml-3 flex-grow">
+                                <label for="admin-task-4" class="text-sm font-medium">Review database
+                                    performance</label>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Due in 3 days</p>
+                            </div>
+                            <span class="ml-auto badge badge-warning">
+                                Medium
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button id="create-task" class="btn btn-primary w-full flex items-center justify-center">
+                            <i class="fas fa-plus mr-2"></i> Create New Task
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Admin Dashboard Specific Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Task creation
+            document.getElementById('create-task').addEventListener('click', function () {
+                // In a real implementation, this would open a modal to create a new task
+                alert('Task creation functionality would open here');
+            });
+
+            // Audit logs button
+            document.getElementById('view-audit-logs').addEventListener('click', function () {
+                window.location.href = 'audit-logs.html';
+            });
+
+            // System settings button
+            document.getElementById('system-settings').addEventListener('click', function () {
+                window.location.href = 'system-settings.html';
+            });
+        });
+    </script>
+</body>
+
+</html>

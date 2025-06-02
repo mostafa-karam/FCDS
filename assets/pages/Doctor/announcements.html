@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements - FCDS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="stylesheet" href="../../css/tailwind-custom.css">
+</head>
+
+<body class="bg-white text-gray-900 antialiased min-h-screen flex flex-col">
+
+    <!-- Main Content -->
+    <div class="main-content p-4 sm:p-6 lg:p-8 ml-0 md:ml-64 transition-all duration-300 mt-16">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-900">Announcements</h1>
+            <button id="create-announcement-btn"
+                class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md text-sm font-medium flex items-center">
+                <i class="fas fa-plus mr-2"></i> Create Announcement
+            </button>
+        </div>
+
+        <!-- Announcement Filters -->
+        <div class="bg-white rounded-lg shadow p-4 border border-gray-200 mb-6">
+            <div class="flex flex-wrap gap-4">
+                <div class="flex-1 min-w-[200px]">
+                    <label for="audience-filter" class="block text-sm font-medium text-gray-700 mb-1">Filter by
+                        Audience</label>
+                    <select id="audience-filter"
+                        class="w-full border-gray-300 rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                        <option value="">All Audiences</option>
+                        <option value="all">Everyone</option>
+                        <option value="students">Students</option>
+                        <option value="staff">Staff</option>
+                        <option value="doctor-assistants">Doctor Assistants</option>
+                        <option value="doctors">Doctors</option>
+                    </select>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label for="status-filter" class="block text-sm font-medium text-gray-700 mb-1">Filter by
+                        Status</label>
+                    <select id="status-filter"
+                        class="w-full border-gray-300 rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                        <option value="">All Status</option>
+                        <option value="published">Published</option>
+                        <option value="draft">Draft</option>
+                        <option value="scheduled">Scheduled</option>
+                        <option value="archived">Archived</option>
+                    </select>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label for="search-filter" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                        <input type="text" id="search-filter" placeholder="Search announcements"
+                            class="pl-10 w-full border-gray-300 rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                    </div>
+                </div>
+                <div class="flex items-end">
+                    <button id="apply-filters"
+                        class="px-4 py-2 bg-gray-800 hover:bg-gray-900 text-white rounded-md text-sm font-medium">
+                        Apply Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Announcements List -->
+        <div class="space-y-4">
+            <!-- Announcement Item 1 -->
+            <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+                <div class="p-6">
+                    <div class="flex justify-between">
+                        <div>
+                            <h2 class="text-xl font-semibold text-gray-900 mb-1">Semester Registration Opens Next Week
+                            </h2>
+                            <p class="text-sm text-gray-500 mb-3">Published on July 5, 2024 • <span
+                                    class="text-primary-600">All Students</span></p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="text-indigo-600 hover:text-indigo-900" title="Edit Announcement">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-900" title="Delete Announcement">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="prose max-w-none">
+                        <p>Registration for the Fall 2024 semester will begin on July 15, 2024. All students must
+                            complete their course selection by July 30, 2024. Please make sure to meet with your
+                            academic advisor before registering.</p>
+                    </div>
+                    <div class="mt-4 flex justify-between items-center">
+                        <div class="flex items-center space-x-4">
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Published
+                            </span>
+                            <span class="text-sm text-gray-500">Views: 385</span>
+                        </div>
+                        <button class="text-sm text-primary-600 hover:text-primary-700 flex items-center">
+                            <i class="fas fa-eye mr-1"></i> View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Announcement Item 2 -->
+            <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+                <div class="p-6">
+                    <div class="flex justify-between">
+                        <div>
+                            <h2 class="text-xl font-semibold text-gray-900 mb-1">Faculty Meeting - Computer Science
+                                Department</h2>
+                            <p class="text-sm text-gray-500 mb-3">Published on July 3, 2024 • <span
+                                    class="text-primary-600">Doctors & Assistants</span></p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="text-indigo-600 hover:text-indigo-900" title="Edit Announcement">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-900" title="Delete Announcement">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="prose max-w-none">
+                        <p>The monthly faculty meeting for the Computer Science Department will be held on July 10,
+                            2024, at 2:00 PM in Room CS-301. Attendance is mandatory for all faculty members. Please
+                            prepare your course updates and research progress reports.</p>
+                    </div>
+                    <div class="mt-4 flex justify-between items-center">
+                        <div class="flex items-center space-x-4">
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Published
+                            </span>
+                            <span class="text-sm text-gray-500">Views: 42</span>
+                        </div>
+                        <button class="text-sm text-primary-600 hover:text-primary-700 flex items-center">
+                            <i class="fas fa-eye mr-1"></i> View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Announcement Item 3 -->
+            <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+                <div class="p-6">
+                    <div class="flex justify-between">
+                        <div>
+                            <h2 class="text-xl font-semibold text-gray-900 mb-1">Campus Infrastructure Maintenance</h2>
+                            <p class="text-sm text-gray-500 mb-3">Scheduled for July 12, 2024 • <span
+                                    class="text-primary-600">Everyone</span></p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="text-indigo-600 hover:text-indigo-900" title="Edit Announcement">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-900" title="Delete Announcement">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="prose max-w-none">
+                        <p>The campus will undergo scheduled maintenance on July 15-16, 2024. During this time, there
+                            may be temporary disruptions to water, electricity, and internet services in various
+                            buildings. Please plan accordingly and we apologize for any inconvenience.</p>
+                    </div>
+                    <div class="mt-4 flex justify-between items-center">
+                        <div class="flex items-center space-x-4">
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                Scheduled
+                            </span>
+                            <span class="text-sm text-gray-500">Will be published in 7 days</span>
+                        </div>
+                        <button class="text-sm text-primary-600 hover:text-primary-700 flex items-center">
+                            <i class="fas fa-eye mr-1"></i> View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Announcement Item 4 -->
+            <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+                <div class="p-6">
+                    <div class="flex justify-between">
+                        <div>
+                            <h2 class="text-xl font-semibold text-gray-900 mb-1">Research Grant Opportunities</h2>
+                            <p class="text-sm text-gray-500 mb-3">Draft created on July 1, 2024 • <span
+                                    class="text-primary-600">Faculty</span></p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="text-indigo-600 hover:text-indigo-900" title="Edit Announcement">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-900" title="Delete Announcement">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="prose max-w-none">
+                        <p>The Research Office is pleased to announce new grant opportunities for faculty members in the
+                            fields of Data Science, Artificial Intelligence, and Cybersecurity. Applications will be
+                            accepted starting August 1, 2024. Detailed information sessions will be held on July 20 and
+                            25.</p>
+                    </div>
+                    <div class="mt-4 flex justify-between items-center">
+                        <div class="flex items-center space-x-4">
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                Draft
+                            </span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="text-sm text-primary-600 hover:text-primary-700 flex items-center">
+                                <i class="fas fa-eye mr-1"></i> Preview
+                            </button>
+                            <button class="text-sm text-green-600 hover:text-green-700 flex items-center">
+                                <i class="fas fa-check mr-1"></i> Publish
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-6 flex items-center justify-between">
+            <div>
+                <p class="text-sm text-gray-700">
+                    Showing <span class="font-medium">1</span> to <span class="font-medium">4</span> of <span
+                        class="font-medium">12</span> announcements
+                </p>
+            </div>
+            <div>
+                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                    <a href="#"
+                        class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        <span class="sr-only">Previous</span>
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                    <a href="#"
+                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary-50 text-sm font-medium text-primary-600 hover:bg-gray-50">
+                        1
+                    </a>
+                    <a href="#"
+                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        2
+                    </a>
+                    <a href="#"
+                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        3
+                    </a>
+                    <a href="#"
+                        class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        <span class="sr-only">Next</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Announcement Modal (Hidden by default) -->
+    <div id="create-announcement-modal"
+        class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg max-w-3xl w-full mx-4 shadow-xl">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium text-gray-900">Create New Announcement</h3>
+                    <button id="close-modal" class="text-gray-400 hover:text-gray-500" title="Close modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="create-announcement-form">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+                            <input type="text" id="title" name="title"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="audience" class="block text-sm font-medium text-gray-700">Audience</label>
+                                <select id="audience" name="audience"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                                    <option value="all">Everyone</option>
+                                    <option value="students">Students</option>
+                                    <option value="staff">Staff</option>
+                                    <option value="doctor-assistants">Doctor Assistants</option>
+                                    <option value="doctors">Doctors</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                                <select id="status" name="status"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                                    <option value="published">Publish Now</option>
+                                    <option value="draft">Save as Draft</option>
+                                    <option value="scheduled">Schedule for Later</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="schedule-container" class="hidden">
+                            <label for="schedule-date" class="block text-sm font-medium text-gray-700">Publication
+                                Date</label>
+                            <input type="datetime-local" id="schedule-date" name="schedule-date"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="content" class="block text-sm font-medium text-gray-700">Content</label>
+                            <textarea id="content" name="content" rows="6"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"></textarea>
+                        </div>
+                        <div>
+                            <label for="attachments" class="block text-sm font-medium text-gray-700">Attachments
+                                (Optional)</label>
+                            <div
+                                class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                <div class="space-y-1 text-center">
+                                    <i class="fas fa-upload mx-auto h-12 w-12 text-gray-400"></i>
+                                    <div class="flex text-sm text-gray-600">
+                                        <label for="file-upload"
+                                            class="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500">
+                                            <span>Upload files</span>
+                                            <input id="file-upload" name="file-upload" type="file" class="sr-only"
+                                                multiple>
+                                        </label>
+                                        <p class="pl-1">or drag and drop</p>
+                                    </div>
+                                    <p class="text-xs text-gray-500">PNG, JPG, PDF up to 10MB</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end space-x-3">
+                        <button type="button" id="cancel-create-announcement"
+                            class="py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                            Create Announcement
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Page Specific Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // Modal Controls
+            const createAnnouncementModal = document.getElementById('create-announcement-modal');
+            const createAnnouncementBtn = document.getElementById('create-announcement-btn');
+            const closeModalBtn = document.getElementById('close-modal');
+            const cancelCreateAnnouncementBtn = document.getElementById('cancel-create-announcement');
+            const statusSelect = document.getElementById('status');
+            const scheduleContainer = document.getElementById('schedule-container');
+
+            // Status change handler
+            statusSelect.addEventListener('change', function () {
+                if (this.value === 'scheduled') {
+                    scheduleContainer.classList.remove('hidden');
+                } else {
+                    scheduleContainer.classList.add('hidden');
+                }
+            });
+
+            // Open modal
+            createAnnouncementBtn.addEventListener('click', function () {
+                createAnnouncementModal.classList.remove('hidden');
+            });
+
+            // Close modal
+            function closeModal() {
+                createAnnouncementModal.classList.add('hidden');
+            }
+
+            closeModalBtn.addEventListener('click', closeModal);
+            cancelCreateAnnouncementBtn.addEventListener('click', closeModal);
+
+            // Close modal when clicking outside
+            createAnnouncementModal.addEventListener('click', function (e) {
+                if (e.target === createAnnouncementModal) {
+                    closeModal();
+                }
+            });
+
+            // Form submission
+            const createAnnouncementForm = document.getElementById('create-announcement-form');
+            createAnnouncementForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                // Create announcement logic would go here
+                alert('Announcement created successfully!');
+                closeModal();
+            });
+        });
+    </script>
+</body>
+
+</html>

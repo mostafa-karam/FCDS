@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment Management - FCDS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        success: {
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            700: '#15803d',
+                        },
+                        warning: {
+                            100: '#fef9c3',
+                            500: '#eab308',
+                            700: '#a16207',
+                        },
+                        danger: {
+                            100: '#fee2e2',
+                            500: '#ef4444',
+                            700: '#b91c1c',
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        .sidebar-transition {
+            transition: width 0.3s ease;
+        }
+
+        .sidebar-collapsed {
+            width: 4rem !important;
+        }
+
+        .sidebar-collapsed .sidebar-content,
+        .sidebar-collapsed .sidebar-label {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar-content,
+        .sidebar-label {
+            transition: opacity 0.2s;
+        }
+
+        .sidebar-collapsed .sidebar-nav-icon {
+            margin-right: 0 !important;
+            justify-content: center;
+        }
+
+        .sidebar-collapsed .sidebar-nav-label {
+            display: none;
+        }
+
+        .glass-effect {
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s ease;
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .typing-indicator {
+            animation: typing 1.5s infinite;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .header-fixed-height {
+            height: 72px;
+        }
+    </style>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="stylesheet" href="../../css/tailwind-custom.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Assignment specific styles */
+        .assignment-card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 8px 0 rgba(30, 41, 59, 0.06);
+            transition: all 0.2s ease;
+        }
+
+        .assignment-card:hover {
+            box-shadow: 0 4px 16px 0 rgba(30, 41, 59, 0.10);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-draft {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .status-published {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-closed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-grading {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .progress-bar {
+            height: 0.5rem;
+            background: #e2e8f0;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: #2563eb;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white antialiased min-h-screen flex flex-col"
+    data-required-role="doctor" data-required-permission="manage_assignments">
+    2025
+
+    <!-- Main Content -->
+    <div class="main-content p-4 sm:p-6 lg:p-8 ml-0 md:ml-64 transition-all duration-300 mt-16">
+        <!-- Page Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Assignment Management</h1>
+                <p class="text-gray-600 dark:text-gray-400">Create, edit and manage student assignments</p>
+            </div>
+            <div class="mt-4 md:mt-0">
+                <button id="exportAssignments" class="btn-secondary" title="Export assignments"
+                    aria-label="Export assignments">
+                    <i class="fas fa-download mr-2"></i> Export
+                </button>
+                <button id="createAssignment" class="btn-primary" title="Create new assignment"
+                    aria-label="Create new assignment">
+                    <i class="fas fa-plus mr-2"></i> New Assignment
+                </button>
+            </div>
+        </div>
+
+        <!-- Assignment Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            <!-- Active Assignments -->
+            <div class="assignment-card p-4">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Total Assignments</p>
+                        <p class="text-xl font-semibold text-gray-900">24</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Submissions -->
+            <div class="assignment-card p-4">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-green-100 text-green-600 mr-4">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Submitted</p>
+                        <p class="text-xl font-semibold text-gray-900">156</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graded Submissions -->
+            <div class="assignment-card p-4">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Pending Review</p>
+                        <p class="text-xl font-semibold text-gray-900">42</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Late Submissions -->
+            <div class="assignment-card p-4">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-red-100 text-red-600 mr-4">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Late Submissions</p>
+                        <p class="text-xl font-semibold text-gray-900">8</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filter Section -->
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="relative">
+                    <input type="text" id="searchAssignment" placeholder="Search assignments..."
+                        class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        aria-label="Search assignments">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+                <select id="courseFilter"
+                    class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    aria-label="Filter by course" title="Filter by course">
+                    <option value="">All Courses</option>
+                    <option value="cs101">CS101 - Introduction to Programming</option>
+                    <option value="cs201">CS201 - Data Structures</option>
+                    <option value="cs301">CS301 - Algorithms</option>
+                </select>
+                <select id="statusFilter"
+                    class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    aria-label="Filter by status" title="Filter by status">
+                    <option value="">All Status</option>
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                    <option value="closed">Closed</option>
+                    <option value="grading">Grading</option>
+                </select>
+                <button id="applyFilters" class="btn-primary" title="Apply filters" aria-label="Apply filters">
+                    <i class="fas fa-filter mr-2"></i> Apply Filters
+                </button>
+            </div>
+        </div>
+
+        <!-- Assignments List -->
+        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Assignment
+                        </th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Course
+                        </th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Due Date
+                        </th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status
+                        </th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Progress
+                        </th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="assignmentsTableBody" class="bg-white divide-y divide-gray-200">
+                    <!-- Table content will be dynamically populated -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-between items-center mt-6">
+            <div class="text-sm text-gray-600">
+                Showing <span id="startIndex">1</span> to <span id="endIndex">10</span> of <span
+                    id="totalAssignments">24</span> assignments
+            </div>
+            <div class="flex space-x-2">
+                <button id="prevPage" class="btn-secondary" title="Previous page" aria-label="Go to previous page">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button id="nextPage" class="btn-secondary" title="Next page" aria-label="Go to next page">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Assignment Modal (Hidden by default) -->
+    <div id="create-assignment-modal"
+        class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div
+            class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white dark:bg-gray-800">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">Create New Assignment</h3>
+                <div class="mt-2 px-7 py-3">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Create a new assignment for your students.
+                    </p>
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button id="close-modal"
+                        class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-white text-base font-medium rounded-md shadow-sm hover:bg-gray-400 dark:hover:bg-gray-700 focus:outline-none">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Page Initialization -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Load sidebar
+            fetch('../../components/sidebar-navigation.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('sidebar-container').innerHTML = html;
+                    // Initialize sidebar after loading
+                    if (typeof setupSidebar === 'function') {
+                        setupSidebar();
+                    }
+                    // Set active navigation item
+                    const currentRole = 'doctor';
+                    document.querySelectorAll(`[data-role="${currentRole}"]`).forEach(el => {
+                        el.classList.remove('hidden');
+                    });
+                });
+
+            // Load header
+            fetch('../../components/header.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('header-container').innerHTML = html;
+                });
+
+            // Modal functionality
+            const modal = document.getElementById('create-assignment-modal');
+            const createBtn = document.getElementById('createAssignment');
+            const closeBtn = document.getElementById('close-modal');
+
+            createBtn.addEventListener('click', function () {
+                modal.classList.remove('hidden');
+            });
+
+            closeBtn.addEventListener('click', function () {
+                modal.classList.add('hidden');
+            });
+
+            // Course filter change event
+            document.getElementById('courseFilter').addEventListener('change', function () {
+                const selectedCourse = this.value;
+                console.log('Selected course:', selectedCourse);
+                // Implementation would filter assignments by course
+            });
+
+            // Assignment management functionality
+            let currentPage = 1;
+            const assignmentsPerPage = 10;
+
+            // Load assignments with pagination
+            async function loadAssignments(page = 1) {
+                try {
+                    const response = await fetch(`/api/assignments?page=${page}&limit=${assignmentsPerPage}`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                        }
+                    });
+
+                    if (!response.ok) throw new Error('Failed to fetch assignments');
+
+                    const data = await response.json();
+                    renderAssignments(data.assignments);
+                    updatePagination(data.total);
+                    updateStatistics(data.statistics);
+                } catch (error) {
+                    console.error('Error loading assignments:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to load assignments. Please try again.'
+                    });
+                }
+            }
+
+            // Render assignments in table
+            function renderAssignments(assignments) {
+                const tbody = document.getElementById('assignmentsTableBody');
+                tbody.innerHTML = assignments.map(assignment => `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <i class="fas fa-file-alt text-2xl text-gray-400"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">${assignment.title}</div>
+                                    <div class="text-sm text-gray-500">${assignment.description}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">${assignment.course}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">${new Date(assignment.dueDate).toLocaleDateString()}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="status-badge status-${assignment.status.toLowerCase()}">
+                                ${assignment.status}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${assignment.progress}%"></div>
+                            </div>
+                            <div class="text-sm text-gray-500 mt-1">${assignment.progress}% Complete</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div class="flex space-x-2">
+                                <button onclick="editAssignment('${assignment.id}')" class="text-blue-600 hover:text-blue-800" title="Edit assignment">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="viewSubmissions('${assignment.id}')" class="text-green-600 hover:text-green-800" title="View submissions">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button onclick="deleteAssignment('${assignment.id}')" class="text-red-600 hover:text-red-800" title="Delete assignment">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            // Update pagination
+            function updatePagination(total) {
+                const startIndex = (currentPage - 1) * assignmentsPerPage + 1;
+                const endIndex = Math.min(startIndex + assignmentsPerPage - 1, total);
+
+                document.getElementById('startIndex').textContent = startIndex;
+                document.getElementById('endIndex').textContent = endIndex;
+                document.getElementById('totalAssignments').textContent = total;
+
+                document.getElementById('prevPage').disabled = currentPage === 1;
+                document.getElementById('nextPage').disabled = endIndex >= total;
+            }
+
+            // Update statistics
+            function updateStatistics(stats) {
+                // Update statistics cards with new data
+                // This would be implemented based on your backend API response
+            }
+
+            // Event listeners
+            document.getElementById('prevPage').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadAssignments(currentPage);
+                }
+            });
+
+            document.getElementById('nextPage').addEventListener('click', () => {
+                currentPage++;
+                loadAssignments(currentPage);
+            });
+
+            document.getElementById('searchAssignment').addEventListener('input', debounce((e) => {
+                // Implement search functionality
+            }, 300));
+
+            document.getElementById('applyFilters').addEventListener('click', () => {
+                // Implement filter functionality
+            });
+
+            // Utility functions
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+
+            // Initialize
+            document.addEventListener('DOMContentLoaded', () => {
+                loadAssignments();
+            });
+        });
+    </script>
+</body>
+
+</html>

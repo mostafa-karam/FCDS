@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - FCDS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        success: {
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            700: '#15803d',
+                        },
+                        warning: {
+                            100: '#fef9c3',
+                            500: '#eab308',
+                            700: '#a16207',
+                        },
+                        danger: {
+                            100: '#fee2e2',
+                            500: '#ef4444',
+                            700: '#b91c1c',
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        .sidebar-transition {
+            transition: width 0.3s ease;
+        }
+
+        .sidebar-collapsed {
+            width: 4rem !important;
+        }
+
+        .sidebar-collapsed .sidebar-content,
+        .sidebar-collapsed .sidebar-label {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar-content,
+        .sidebar-label {
+            transition: opacity 0.2s;
+        }
+
+        .sidebar-collapsed .sidebar-nav-icon {
+            margin-right: 0 !important;
+            justify-content: center;
+        }
+
+        .sidebar-collapsed .sidebar-nav-label {
+            display: none;
+        }
+
+        .glass-effect {
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s ease;
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .typing-indicator {
+            animation: typing 1.5s infinite;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .header-fixed-height {
+            height: 72px;
+        }
+    </style>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white antialiased min-h-screen flex flex-col">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="bg-white shadow-lg sidebar-transition w-64 fixed h-full z-40 flex flex-col">
+        <div class="p-6 border-b border-gray-200 sidebar-content">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-primary-900 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-graduation-cap text-white"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-gray-800">FCDS</h2>
+                    <p class="text-xs text-gray-500" id="userRole">Student</p>
+                </div>
+            </div>
+        </div>
+        <nav class="mt-6 flex-1" id="sidebarNav">
+            <!-- Dynamic navigation will be inserted here -->
+        </nav>
+    </aside>
+    <!-- Top Navbar -->
+    <header id="mainHeader"
+        class="bg-white shadow-sm border-b border-gray-200 px-6 py-4 fixed left-0 right-0 top-0 z-30 ml-64 transition-all duration-300 flex items-center justify-between header-fixed-height">
+        <div class="flex items-center space-x-4">
+            <button id="sidebarToggle"
+                class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                aria-label="Toggle sidebar" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="text-2xl font-bold text-gray-800" id="pageTitle">Dashboard</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+            <!-- Search -->
+            <div class="relative hidden md:block">
+                <input type="text" placeholder="Search..."
+                    class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 bg-gray-100 text-gray-800"
+                    aria-label="Search">
+                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+            <!-- Notifications -->
+            <button class="relative p-2 text-gray-500 hover:bg-gray-100 rounded-lg" aria-label="Notifications">
+                <i class="fas fa-bell"></i>
+                <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+            <!-- User Menu -->
+            <div class="relative">
+                <button id="userMenuToggle"
+                    class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 focus:outline-none"
+                    onclick="toggleUserMenu()">
+                    <div class="w-8 h-8 bg-primary-900 rounded-full flex items-center justify-center">
+                        <span class="text-white text-sm font-medium" id="userInitials">SW</span>
+                    </div>
+                    <span class="hidden md:block text-sm font-medium text-gray-700" id="userName">Sophia Wilson</span>
+                    <i class="fas fa-chevron-down text-xs"></i>
+                </button>
+                <div id="userMenu"
+                    class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden">
+                    <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                    <hr class="border-gray-200">
+                    <button id="logoutBtn"
+                        class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                        onclick="handleLogout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="p-6 ml-64 pt-24 transition-all duration-300" id="mainContentWrapper">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <!-- Profile Card -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700 animate-fadeIn card-shadow">
+                <div class="flex flex-col items-center">
+                    <div class="relative mb-4">
+                        <img src="../../img/pic-1.jpg" alt="Student Photo"
+                            class="w-20 h-20 rounded-full border-4 border-primary-900 shadow-lg">
+                        <div
+                            class="absolute -bottom-2 -right-2 bg-success-700 text-white rounded-full p-1.5 shadow-lg border-2 border-white dark:border-gray-800">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-1" id="student-name">Sophia Wilson
+                    </h2>
+                    <p class="text-gray-600 dark:text-gray-400 mb-3" id="student-id">ID: STU2025001</p>
+                    <div
+                        class="bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-sm px-3 py-1 rounded-full mb-4">
+                        <span id="student-program">B.Sc. Computer Science</span> • <span id="student-year">3rd
+                            Year</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 w-full mb-4">
+                        <div class="text-center">
+                            <p class="text-lg font-bold text-primary-900 dark:text-primary-300">3.85</p>
+                            <p class="text-xs text-gray-500">CGPA</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-lg font-bold text-primary-900 dark:text-primary-300">95%</p>
+                            <p class="text-xs text-gray-500">Attendance</p>
+                        </div>
+                    </div>
+                    <div class="flex w-full">
+                        <a href="profile.html"
+                            class="w-full text-center py-2 rounded-lg bg-primary-900 text-white font-semibold hover:bg-primary-700 transition">View
+                            Profile</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Upcoming Classes Card -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700 animate-fadeIn card-shadow">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Today's Classes</h2>
+                    <a href="class-schedule.html"
+                        class="text-sm text-primary-600 dark:text-primary-400 hover:underline">View Schedule</a>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex p-3 bg-primary-50 dark:bg-primary-900/20 rounded-lg border-l-4 border-primary-500">
+                        <div class="text-center mr-4">
+                            <span class="block text-lg font-bold text-primary-900 dark:text-primary-300">09:00</span>
+                            <span class="block text-xs text-gray-500">AM</span>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-900 dark:text-white">DB Systems</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">Room 201</p>
+                        </div>
+                        <div class="ml-auto self-center">
+                            <span class="bg-success-700 text-white text-xs px-2 py-0.5 rounded">Ongoing</span>
+                        </div>
+                    </div>
+                    <div class="flex p-3 bg-gray-50 dark:bg-gray-700/30 rounded-lg">
+                        <div class="text-center mr-4">
+                            <span class="block text-lg font-bold text-primary-900 dark:text-primary-300">11:00</span>
+                            <span class="block text-xs text-gray-500">AM</span>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-900 dark:text-white">Data Mining</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">Room 105</p>
+                        </div>
+                    </div>
+                    <div class="flex p-3 bg-gray-50 dark:bg-gray-700/30 rounded-lg">
+                        <div class="text-center mr-4">
+                            <span class="block text-lg font-bold text-primary-900 dark:text-primary-300">02:00</span>
+                            <span class="block text-xs text-gray-500">PM</span>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-900 dark:text-white">Web Dev</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">Lab 3</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Quick Links Card -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700 animate-fadeIn card-shadow">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <a href="assignments.html"
+                        class="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors hover-lift">
+                        <div class="mb-2"><i class="fas fa-clipboard-list text-primary-700 text-2xl"></i></div>
+                        <span class="text-sm text-gray-900 dark:text-white text-center">Assignments</span>
+                        <span class="text-xs text-warning-700 dark:text-warning-500 font-medium">2 pending</span>
+                    </a>
+                    <a href="attendance.html"
+                        class="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors hover-lift">
+                        <div class="mb-2"><i class="fas fa-calendar-check text-success-700 text-2xl"></i></div>
+                        <span class="text-sm text-gray-900 dark:text-white text-center">Attendance</span>
+                    </a>
+                    <a href="grades.html"
+                        class="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors hover-lift">
+                        <div class="mb-2"><i class="fas fa-graduation-cap text-primary-700 text-2xl"></i></div>
+                        <span class="text-sm text-gray-900 dark:text-white text-center">Grades</span>
+                    </a>
+                    <a href="certificates.html"
+                        class="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors hover-lift">
+                        <div class="mb-2"><i class="fas fa-certificate text-warning-700 text-2xl"></i></div>
+                        <span class="text-sm text-gray-900 dark:text-white text-center">Certificates</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance and Performance Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Attendance Chart -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Attendance Overview</h2>
+                    <div>
+                        <select id="attendance-period" aria-label="Select attendance period"
+                            class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md text-sm px-3 py-1 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly" selected>Monthly</option>
+                            <option value="semester">Semester</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="attendance-chart" class="h-72"></div>
+            </div>
+
+            <!-- Performance Chart -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Course Performance</h2>
+                    <div>
+                        <select id="performance-semester" aria-label="Select performance semester"
+                            class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-md text-sm px-3 py-1 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            <option value="current" selected>Current Semester</option>
+                            <option value="previous">Previous Semester</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="performance-chart" class="h-72"></div>
+            </div>
+        </div>
+
+        <!-- Announcements and Deadlines -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Announcements -->
+            <div
+                class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Announcements</h2>
+                    <a href="#" class="text-sm text-primary-600 dark:text-primary-400 hover:underline">View All</a>
+                </div>
+                <div class="space-y-4">
+                    <div class="p-4 border-l-4 border-primary-500 bg-gray-50 dark:bg-gray-700/30 rounded-r-lg">
+                        <div class="flex justify-between mb-1">
+                            <h3 class="font-medium text-gray-900 dark:text-white">Semester Registration Open</h3>
+                            <span class="text-xs text-gray-500 dark:text-gray-400">2 days ago</span>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Registration for the upcoming semester
+                            is now open. Please complete your course selection by July 15th.</p>
+                        <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                            <span
+                                class="bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-400 px-2 py-0.5 rounded">Academic</span>
+                            <span class="ml-2">Posted by: Registrar Office</span>
+                        </div>
+                    </div>
+                    <div class="p-4 border-l-4 border-warning-500 bg-gray-50 dark:bg-gray-700/30 rounded-r-lg">
+                        <div class="flex justify-between mb-1">
+                            <h3 class="font-medium text-gray-900 dark:text-white">Final Exam Schedule Updated</h3>
+                            <span class="text-xs text-gray-500 dark:text-gray-400">5 days ago</span>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">The final examination schedule has been
+                            updated. Please check your exam dates and venues.</p>
+                        <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                            <span
+                                class="bg-warning-100 dark:bg-warning-900/30 text-warning-800 dark:text-warning-400 px-2 py-0.5 rounded">Exams</span>
+                            <span class="ml-2">Posted by: Examination Department</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Deadlines -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Upcoming Deadlines</h2>
+                    <a href="#" class="text-sm text-primary-600 dark:text-primary-400 hover:underline">View Calendar</a>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-center p-3 bg-danger-100/50 dark:bg-danger-900/20 rounded-lg">
+                        <div class="mr-3 bg-white dark:bg-gray-800 rounded-lg p-2 shadow text-center min-w-[3rem]">
+                            <p class="text-danger-700 dark:text-danger-400 text-xs">JUL</p>
+                            <p class="text-danger-700 dark:text-danger-400 font-bold">10</p>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-900 dark:text-white">Data Mining Assignment</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">Due in 2 days</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-3 bg-warning-100/50 dark:bg-warning-900/20 rounded-lg">
+                        <div class="mr-3 bg-white dark:bg-gray-800 rounded-lg p-2 shadow text-center min-w-[3rem]">
+                            <p class="text-warning-700 dark:text-warning-400 text-xs">JUL</p>
+                            <p class="text-warning-700 dark:text-warning-400 font-bold">15</p>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-900 dark:text-white">Course Registration Deadline</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">Due in 7 days</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-3 bg-gray-50 dark:bg-gray-700/30 rounded-lg">
+                        <div class="mr-3 bg-white dark:bg-gray-800 rounded-lg p-2 shadow text-center min-w-[3rem]">
+                            <p class="text-gray-700 dark:text-gray-400 text-xs">JUL</p>
+                            <p class="text-gray-700 dark:text-gray-400 font-bold">20</p>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-900 dark:text-white">Machine Learning Project</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">Due in 12 days</p>
+                        </div>
+                    </div>
+                    <a href="assignments.html"
+                        class="block mt-4 text-center text-sm text-primary-600 dark:text-primary-400 hover:underline">
+                        View All Deadlines
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 py-4 mt-auto">
+        <div class="container mx-auto text-center">
+            <p class="text-sm">&copy; 2025 FCDS. All rights reserved.</p>
+            <p class="text-xs">Designed with <i class="fas fa-heart text-red-500"></i> by FCDS Team</p>
+        </div>
+    </footer>
+</body>
+
+<script>
+    // Global state management
+    const AppState = {
+        currentUser: null,
+        currentRole: null,
+        sidebarCollapsed: true,
+    };
+
+    // Role-based navigation configurations
+    const NavigationConfig = {
+        'student': [
+            { icon: 'fas fa-tachometer-alt', label: 'Dashboard', id: 'dashboard', href: 'student-db.html' },
+            { icon: 'fas fa-calendar-check', label: 'Attendance', id: 'attendance', href: 'attendance.html' },
+            { icon: 'fas fa-book', label: 'Courses', id: 'courses', href: 'courses.html' },
+            { icon: 'fas fa-credit-card', label: 'Fees & Payments', id: 'fees', href: 'fees-payments.html' },
+            { icon: 'fas fa-graduation-cap', label: 'Grades', id: 'grades', href: 'grades.html' },
+            { icon: 'fas fa-calculator', label: 'CGPA Calculator', id: 'cgpa', href: 'cgpa-calculator.html' },
+            { icon: 'fas fa-book-open', label: 'Course Materials', id: 'materials', href: 'course-materials.html' },
+            { icon: 'fas fa-calendar', label: 'Schedule', id: 'schedule', href: 'class-schedule.html' },
+            { icon: 'fas fa-clipboard-list', label: 'Assignments', id: 'assignments', href: 'assignments.html' },
+            { icon: 'fas fa-certificate', label: 'Certificates', id: 'certificates', href: 'certificates.html' },
+            { icon: 'fas fa-comments', label: 'Grievance Form', id: 'chat', href: 'grievance-form.html' },
+            { icon: 'fas fa-chart-line', label: 'Progress', id: 'progress', href: 'progress.html' },
+            { icon: 'fas fa-user', label: 'Profile', id: 'profile', href: 'profile.html' }
+        ]
+    };
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function () {
+        AppState.currentRole = 'student'; // Ensure role is set before loading navigation
+        loadNavigation();
+
+        // Apply sidebar collapsed state on page load
+        if (AppState.sidebarCollapsed) {
+            const sidebar = document.getElementById('sidebar');
+            const mainContentWrapper = document.getElementById('mainContentWrapper');
+            const header = document.getElementById('mainHeader');
+
+            sidebar.classList.add('sidebar-collapsed');
+            sidebar.classList.remove('w-64');
+            sidebar.classList.add('w-16');
+            mainContentWrapper.classList.remove('ml-64');
+            mainContentWrapper.classList.add('ml-16');
+            header && header.classList.remove('ml-64');
+            header && header.classList.add('ml-16');
+        }
+
+        initializeApp && initializeApp(); // Call initializeApp if defined
+    });
+    function loadNavigation() {
+        const nav = NavigationConfig[AppState.currentRole];
+        const navContainer = document.getElementById('sidebarNav');
+        navContainer.innerHTML = nav.map(item => `
+                <a href="${item.href}" class="nav-item flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 transition-colors ${item.id === 'dashboard' ? 'bg-blue-50 text-blue-600 border-r-2 border-blue-600' : ''}" title="${item.label}">
+                    <span class="sidebar-nav-icon flex items-center justify-center w-6"><i class="${item.icon}"></i></span>
+                    <span class="sidebar-nav-label ml-3">${item.label}</span>
+                </a>
+            `).join('');
+    }
+    function loadPage(pageId) {
+        // Update active nav
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('bg-blue-50', 'text-blue-600', 'border-r-2', 'border-blue-600');
+        });
+        event.target.closest('.nav-item').classList.add('bg-blue-50', 'text-blue-600', 'border-r-2', 'border-blue-600');
+
+        // Update page title
+        const navItem = NavigationConfig[AppState.currentRole].find(item => item.id === pageId);
+        document.getElementById('pageTitle').textContent = navItem.label;
+
+        // Load content
+        loadDashboardContent(pageId);
+    }
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const mainContentWrapper = document.getElementById('mainContentWrapper');
+        const header = document.getElementById('mainHeader');
+        AppState.sidebarCollapsed = !AppState.sidebarCollapsed;
+
+        if (AppState.sidebarCollapsed) {
+            sidebar.classList.add('sidebar-collapsed');
+            sidebar.classList.remove('w-64');
+            sidebar.classList.add('w-16');
+            mainContentWrapper.classList.remove('ml-64');
+            mainContentWrapper.classList.add('ml-16');
+            header.classList.remove('ml-64');
+            header.classList.add('ml-16');
+        } else {
+            sidebar.classList.remove('sidebar-collapsed');
+            sidebar.classList.add('w-64');
+            sidebar.classList.remove('w-16');
+            mainContentWrapper.classList.remove('ml-16');
+            mainContentWrapper.classList.add('ml-64');
+            header.classList.remove('ml-16');
+            header.classList.add('ml-64');
+        }
+    }
+
+    function toggleUserMenu() {
+        const menu = document.getElementById('userMenu');
+        menu.classList.toggle('hidden');
+    }
+
+    function handleLogout() {
+        // Clear user state
+        AppState.currentUser = null;
+        AppState.currentRole = null;
+
+        // Redirect to login page
+        window.location.href = '../login.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize Attendance Chart
+        const attendanceChartOptions = {
+            series: [{
+                name: 'Attendance',
+                data: [92, 88, 95, 90, 86, 94, 96]
+            }],
+            chart: {
+                type: 'area',
+                height: 280,
+                toolbar: {
+                    show: false
+                },
+                fontFamily: 'Inter, sans-serif',
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth',
+                width: 3
+            },
+            colors: ['#0ea5e9'],
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.7,
+                    opacityTo: 0.2,
+                    stops: [0, 90, 100]
+                }
+            },
+            xaxis: {
+                categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                labels: {
+                    style: {
+                        colors: '#64748b'
+                    }
+                }
+            },
+            yaxis: {
+                min: 0,
+                max: 100,
+                labels: {
+                    style: {
+                        colors: '#64748b'
+                    },
+                    formatter: function (val) {
+                        return val + '%';
+                    }
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function (val) {
+                        return val + '%';
+                    }
+                }
+            }
+        };
+
+        const attendanceChart = new ApexCharts(document.querySelector("#attendance-chart"), attendanceChartOptions);
+        attendanceChart.render();
+
+        // Initialize Performance Chart
+        const performanceChartOptions = {
+            series: [{
+                name: 'Grade',
+                data: [85, 90, 78, 92, 76, 88]
+            }],
+            chart: {
+                type: 'bar',
+                height: 280,
+                toolbar: {
+                    show: false
+                },
+                fontFamily: 'Inter, sans-serif',
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '60%',
+                    borderRadius: 4
+                },
+            },
+            dataLabels: {
+                enabled: false
+            },
+            colors: ['#0ea5e9'],
+            xaxis: {
+                categories: ['DB Systems', 'Data Mining', 'ML', 'Web Dev', 'Algorithms', 'Cloud Computing'],
+                labels: {
+                    style: {
+                        colors: '#64748b'
+                    }
+                }
+            },
+            yaxis: {
+                min: 0,
+                max: 100,
+                labels: {
+                    style: {
+                        colors: '#64748b'
+                    }
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function (val) {
+                        return val + '/100';
+                    }
+                }
+            }
+        };
+
+        const performanceChart = new ApexCharts(document.querySelector("#performance-chart"), performanceChartOptions);
+        performanceChart.render();
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.3/apexcharts.min.js"></script>
+
+</html>

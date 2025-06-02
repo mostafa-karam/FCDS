@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment Management - FCDS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        success: {
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            700: '#15803d',
+                        },
+                        warning: {
+                            100: '#fef9c3',
+                            500: '#eab308',
+                            700: '#a16207',
+                        },
+                        danger: {
+                            100: '#fee2e2',
+                            500: '#ef4444',
+                            700: '#b91c1c',
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="stylesheet" href="../../css/tailwind-custom.css">
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white antialiased min-h-screen flex flex-col"
+    data-required-role="doctor" data-required-permission="manage_assignments">
+
+    <!-- Main Content -->
+    <div class="main-content p-4 sm:p-6 lg:p-8 ml-0 md:ml-64 transition-all duration-300 mt-16">
+        <!-- Page Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Assignment Management</h1>
+                <p class="text-gray-600 dark:text-gray-400">Create, edit and manage student assignments</p>
+            </div>
+            <div class="mt-4 md:mt-0">
+                <button id="create-assignment"
+                    class="bg-primary-600 hover:bg-primary-700 text-white rounded-lg px-4 py-2 text-sm font-medium flex items-center">
+                    <i class="fas fa-plus mr-2"></i>
+                    Create Assignment
+                </button>
+            </div>
+        </div>
+
+        <!-- Assignment Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            <!-- Active Assignments -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Active Assignments</p>
+                        <h3 class="text-3xl font-bold text-primary-700 dark:text-primary-500">8</h3>
+                    </div>
+                    <div class="bg-primary-100 dark:bg-primary-900/30 p-3 rounded-full">
+                        <i class="fas fa-clipboard-list text-primary-700 dark:text-primary-500"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Across all courses</p>
+            </div>
+
+            <!-- Pending Submissions -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Pending Submissions</p>
+                        <h3 class="text-3xl font-bold text-warning-700 dark:text-warning-500">42</h3>
+                    </div>
+                    <div class="bg-warning-100 dark:bg-warning-900/30 p-3 rounded-full">
+                        <i class="fas fa-file-alt text-warning-700 dark:text-warning-500"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-warning-700 dark:text-warning-500 mt-2">Awaiting grading</p>
+            </div>
+
+            <!-- Graded Submissions -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Graded Submissions</p>
+                        <h3 class="text-3xl font-bold text-success-700 dark:text-success-500">105</h3>
+                    </div>
+                    <div class="bg-success-100 dark:bg-success-900/30 p-3 rounded-full">
+                        <i class="fas fa-check-circle text-success-700 dark:text-success-500"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-success-700 dark:text-success-500 mt-2">Average score: 85%</p>
+            </div>
+
+            <!-- Late Submissions -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Late Submissions</p>
+                        <h3 class="text-3xl font-bold text-danger-700 dark:text-danger-500">12</h3>
+                    </div>
+                    <div class="bg-danger-100 dark:bg-danger-900/30 p-3 rounded-full">
+                        <i class="fas fa-exclamation-triangle text-danger-700 dark:text-danger-500"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-danger-700 dark:text-danger-500 mt-2">In the past 30 days</p>
+            </div>
+        </div>
+
+        <!-- Assignment List -->
+        <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Current Assignments</h2>
+                <div class="flex items-center space-x-2">
+                    <label for="course-filter" class="sr-only">Filter by course</label>
+                    <select id="course-filter"
+                        class="rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm px-4 py-2 focus:border-primary-500 focus:ring-primary-500">
+                        <option value="all">All Courses</option>
+                        <option value="cs301">CS301 - Database Systems</option>
+                        <option value="cs302">CS302 - Data Mining</option>
+                        <option value="cs303">CS303 - Machine Learning</option>
+                    </select>
+                    <div class="relative">
+                        <input type="text" placeholder="Search assignments"
+                            class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:border-primary-500 focus:ring-primary-500">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Assignment
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Course
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Due Date
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Submissions
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Status
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        <!-- Assignment 1 -->
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900 dark:text-white">Database Normalization
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">Design a normalized database
+                                    schema</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                CS301
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 dark:text-white">Jul 20, 2025</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">11:59 PM</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                18/28 (64%)
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200">
+                                    Active
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <a href="#" class="text-primary-600 dark:text-primary-400 hover:underline mr-3">View</a>
+                                <a href="#" class="text-warning-600 dark:text-warning-400 hover:underline mr-3">Edit</a>
+                                <a href="#" class="text-danger-600 dark:text-danger-400 hover:underline">Delete</a>
+                            </td>
+                        </tr>
+                        <!-- Assignment 2 -->
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900 dark:text-white">ML Algorithm
+                                    Implementation</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">Implement K-means clustering</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                CS303
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-danger-600 dark:text-danger-400 font-medium">Tomorrow</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">11:59 PM</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                14/25 (56%)
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-warning-100 text-warning-800 dark:bg-warning-900 dark:text-warning-200">
+                                    Due Soon
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <a href="#" class="text-primary-600 dark:text-primary-400 hover:underline mr-3">View</a>
+                                <a href="#" class="text-warning-600 dark:text-warning-400 hover:underline mr-3">Edit</a>
+                                <a href="#" class="text-danger-600 dark:text-danger-400 hover:underline">Delete</a>
+                            </td>
+                        </tr>
+                        <!-- Assignment 3 -->
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900 dark:text-white">Data Mining Project</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">Association rule mining case study
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                CS302
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 dark:text-white">Aug 5, 2025</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">11:59 PM</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                5/30 (17%)
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200">
+                                    Active
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <a href="#" class="text-primary-600 dark:text-primary-400 hover:underline mr-3">View</a>
+                                <a href="#" class="text-warning-600 dark:text-warning-400 hover:underline mr-3">Edit</a>
+                                <a href="#" class="text-danger-600 dark:text-danger-400 hover:underline">Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div
+                class="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 flex items-center justify-between">
+                <div class="text-sm text-gray-700 dark:text-gray-300">
+                    Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span
+                        class="font-medium">8</span> assignments
+                </div>
+                <div class="flex space-x-2">
+                    <button
+                        class="px-3 py-1 text-sm font-medium bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
+                        disabled>Previous</button>
+                    <button
+                        class="px-3 py-1 text-sm font-medium bg-primary-600 border border-primary-600 rounded-md text-white hover:bg-primary-700">1</button>
+                    <button
+                        class="px-3 py-1 text-sm font-medium bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">2</button>
+                    <button
+                        class="px-3 py-1 text-sm font-medium bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">3</button>
+                    <button
+                        class="px-3 py-1 text-sm font-medium bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submissions Needing Review -->
+        <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Submissions Needing Review</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Student
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Assignment
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Course
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Submission Date
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Status
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        <!-- Submission 1 -->
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="h-10 w-10 rounded-full overflow-hidden bg-gray-100">
+                                        <img src="../../public/images/avatars/student-1.jpg" alt="Student avatar">
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-white">Sophia Wilson
+                                        </div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">STU2025001</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                Database Normalization
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                CS301
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 dark:text-white">Jul 18, 2025</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">10:23 AM</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-warning-100 text-warning-800 dark:bg-warning-900 dark:text-warning-200">
+                                    Needs Review
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <a href="#"
+                                    class="text-primary-600 dark:text-primary-400 hover:underline mr-3">Review</a>
+                                <a href="#" class="text-gray-600 dark:text-gray-400 hover:underline">Download</a>
+                            </td>
+                        </tr>
+                        <!-- Submission 2 -->
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="h-10 w-10 rounded-full overflow-hidden bg-gray-100">
+                                        <img src="../../public/images/avatars/student-2.jpg" alt="Student avatar">
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-white">James Anderson
+                                        </div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">STU2025002</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                ML Algorithm Implementation
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                CS303
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 dark:text-white">Jul 17, 2025</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">3:45 PM</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-warning-100 text-warning-800 dark:bg-warning-900 dark:text-warning-200">
+                                    Needs Review
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <a href="#"
+                                    class="text-primary-600 dark:text-primary-400 hover:underline mr-3">Review</a>
+                                <a href="#" class="text-gray-600 dark:text-gray-400 hover:underline">Download</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+                <a href="#" class="text-primary-600 dark:text-primary-400 hover:underline">View All Pending
+                    Submissions</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Assignment Modal (Hidden by default) -->
+    <div id="create-assignment-modal"
+        class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div
+            class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white dark:bg-gray-800">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">Create New Assignment</h3>
+                <div class="mt-2 px-7 py-3">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Create a new assignment for your students.
+                    </p>
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button id="close-modal"
+                        class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-white text-base font-medium rounded-md shadow-sm hover:bg-gray-400 dark:hover:bg-gray-700 focus:outline-none">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Page Initialization -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // Modal functionality
+            const modal = document.getElementById('create-assignment-modal');
+            const createBtn = document.getElementById('create-assignment');
+            const closeBtn = document.getElementById('close-modal');
+
+            createBtn.addEventListener('click', function () {
+                modal.classList.remove('hidden');
+            });
+
+            closeBtn.addEventListener('click', function () {
+                modal.classList.add('hidden');
+            });
+
+            // Course filter change event
+            document.getElementById('course-filter').addEventListener('change', function () {
+                const selectedCourse = this.value;
+                console.log('Selected course:', selectedCourse);
+                // Implementation would filter assignments by course
+            });
+        });
+    </script>
+</body>
+
+</html>

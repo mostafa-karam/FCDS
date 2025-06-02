@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Meta tags for character set and responsive design -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty of Computer and Data Science - Tech Excellence</title>
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="assets/css/style-home.css">
+    <!-- Font Awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts preconnect and import -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <!-- Header Section -->
+        <header>
+            <div class="header-container">
+                <div class="logo">
+                    <img src="assets/img/au-log.png" alt="FCDS Logo">
+                    <span class="logo-text">&nbsp;FCDS<span class="blink">_</span></span>
+                </div>
+                <!-- Main Navigation -->
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#programsSection">Programs</a></li>
+                        <li><a href="#eventsSection">Events</a></li>
+                        <li><a href="#">Research</a></li>
+                        <li><a href="#footerSection">Contact</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <!-- Login Button -->
+                    <a href="assets/pages/login.html" class="btn btn-primary"><i class="fas fa-user-circle"></i>
+                        Login</a>
+                    <!-- Mobile Menu Button -->
+                    <button class="mobile-menu-btn" aria-label="Toggle navigation menu" title="Toggle navigation menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="tag-line">// Where innovation meets education</div>
+                    <h1>Faculty of <span class="highlight">Computer &amp; Data</span> Science</h1>
+                    <p>Empowering the next generation of tech innovators with cutting-edge education in computing, data
+                        analytics, and artificial intelligence.</p>
+                    <!-- Decorative code snippet -->
+                    <div class="code-snippet">
+                        <pre><code><span class="comment">// Your future starts here</span>
+<span class="keyword">function</span> <span class="function">launchCareer</span>() {
+  <span class="keyword">const</span> <span class="variable">skills</span> = <span class="string">'programming, data, AI'</span>;
+  <span class="keyword">const</span> <span class="variable">future</span> = <span class="string">'unlimited'</span>;
+  <span class="keyword">return</span> <span class="function">joinFCDS</span>();
+}</code></pre>
+                    </div>
+                    <!-- Hero Buttons -->
+                    <div class="hero-buttons">
+                        <a href="#programsSection" class="btn btn-primary"><i class="fas fa-laptop-code"></i> Explore
+                            Programs</a>
+                        <a href="#" class="btn btn-secondary"><i class="fas fa-vr-cardboard"></i> Virtual Tour</a>
+                    </div>
+                </div>
+                <!-- Hero Image -->
+                <div class="hero-image">
+                    <img src="assets/img/img.jpg" alt="FCDS Campus">
+                </div>
+            </div>
+        </section>
+
+        <!-- Tech Stack Section -->
+        <section class="tech-stack">
+            <div class="container">
+                <h2 class="section-title">Our Tech Stack <span class="tag">// Technologies</span></h2>
+                <div class="tech-stack-wrapper">
+                    <!-- Scroll Arrows -->
+                    <button class="arrow left" id="scrollLeft" title="Scroll left"><i
+                            class="fas fa-chevron-left"></i></button>
+                    <!-- Tech Stack Grid -->
+                    <div class="tech-stack-grid" id="techStackGrid">
+                        <div class="tech-item">
+                            <div class="tech-icon"><i class="fab fa-python"></i></div>
+                            <span class="tech-name">Python</span>
+                        </div>
+                        <div class="tech-item">
+                            <div class="tech-icon"><i class="fab fa-java"></i></div>
+                            <span class="tech-name">Java</span>
+                        </div>
+                        <div class="tech-item">
+                            <div class="tech-icon"><i class="fab fa-js-square"></i></div>
+                            <span class="tech-name">JavaScript</span>
+                        </div>
+                        <div class="tech-item">
+                            <div class="tech-icon"><i class="fab fa-react"></i></div>
+                            <span class="tech-name">React</span>
+                        </div>
+                        <div class="tech-item">
+                            <div class="tech-icon"><i class="fab fa-node-js"></i></div>
+                            <span class="tech-name">Node.js</span>
+                        </div>
+                        <div class="tech-item">
+                            <div class="tech-icon"><i class="fas fa-database"></i></div>
+                            <span class="tech-name">Database</span>
+                        </div>
+                        <div class="tech-item">
+                            <div class="tech-icon"><i class="fab fa-aws"></i></div>
+                            <span class="tech-name">AWS</span>
+                        </div>
+                        <div class="tech-item">
+                            <div class="tech-icon"><i class="fab fa-android"></i></div>
+                            <span class="tech-name">Android</span>
+                        </div>
+                    </div>
+                    <button class="arrow right" id="scrollRight" title="Scroll right"><i
+                            class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="featuresSection">
+            <div class="container">
+                <h2 class="section-title">Why Choose FCDS <span class="tag">// Features</span></h2>
+                <div class="features-grid">
+                    <!-- Feature Card 1 -->
+                    <div class="feature-card">
+                        <div class="icon">
+                            <i class="fas fa-laptop-code"></i>
+                        </div>
+                        <h3>Cutting-Edge Curriculum</h3>
+                        <p>Learn with industry-standard tools and technologies that prepare you for real-world
+                            challenges.</p>
+                        <div class="tech-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">Java</span>
+                            <span class="tag">JavaScript</span>
+                        </div>
+                    </div>
+                    <!-- Feature Card 2 -->
+                    <div class="feature-card">
+                        <div class="icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h3>Advanced Data Labs</h3>
+                        <p>Access state-of-the-art data science facilities with specialized hardware for big data
+                            processing.</p>
+                        <div class="tech-tags">
+                            <span class="tag">Big Data</span>
+                            <span class="tag">ML</span>
+                            <span class="tag">Analytics</span>
+                        </div>
+                    </div>
+                    <!-- Feature Card 3 -->
+                    <div class="feature-card">
+                        <div class="icon">
+                            <i class="fas fa-users-cog"></i>
+                        </div>
+                        <h3>Collaborative Environment</h3>
+                        <p>Join a vibrant community of tech enthusiasts, innovators, and industry professionals.</p>
+                        <div class="tech-tags">
+                            <span class="tag">Hackathons</span>
+                            <span class="tag">Projects</span>
+                            <span class="tag">Mentorship</span>
+                        </div>
+                    </div>
+                    <!-- Feature Card 4 -->
+                    <div class="feature-card">
+                        <div class="icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h3>Industry Connections</h3>
+                        <p>Benefit from our partnerships with leading tech companies and startups for internships and
+                            jobs.</p>
+                        <div class="tech-tags">
+                            <span class="tag">Internships</span>
+                            <span class="tag">Career</span>
+                            <span class="tag">Networking</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Programs Section -->
+        <section class="programs" id="programsSection">
+            <div class="container">
+                <h2 class="section-title">Our Programs <span class="tag">// Courses</span></h2>
+                <div class="programs-grid">
+                    <!-- Program Card 1 -->
+                    <div class="program-card">
+                        <div class="program-header">
+                            <div class="program-icon"><i class="fas fa-code"></i></div>
+                            <h3>Computer Science</h3>
+                        </div>
+                        <div class="program-content">
+                            <ul class="program-features">
+                                <li><i class="fas fa-check-circle"></i> Algorithm Design & Analysis</li>
+                                <li><i class="fas fa-check-circle"></i> Software Engineering</li>
+                                <li><i class="fas fa-check-circle"></i> Web & Mobile Development</li>
+                                <li><i class="fas fa-check-circle"></i> Cloud Computing</li>
+                            </ul>
+                            <div class="program-footer">
+                                <span class="program-duration"><i class="far fa-clock"></i> 4 Years</span>
+                                <a href="#" class="btn btn-outline">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Program Card 2 -->
+                    <div class="program-card">
+                        <div class="program-header">
+                            <div class="program-icon"><i class="fas fa-chart-bar"></i></div>
+                            <h3>Data Science</h3>
+                        </div>
+                        <div class="program-content">
+                            <ul class="program-features">
+                                <li><i class="fas fa-check-circle"></i> Statistical Analysis</li>
+                                <li><i class="fas fa-check-circle"></i> Machine Learning</li>
+                                <li><i class="fas fa-check-circle"></i> Big Data Technologies</li>
+                                <li><i class="fas fa-check-circle"></i> Data Visualization</li>
+                            </ul>
+                            <div class="program-footer">
+                                <span class="program-duration"><i class="far fa-clock"></i> 4 Years</span>
+                                <a href="#" class="btn btn-outline">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Program Card 3 -->
+                    <div class="program-card">
+                        <div class="program-header">
+                            <div class="program-icon"><i class="fas fa-brain"></i></div>
+                            <h3>Artificial Intelligence</h3>
+                        </div>
+                        <div class="program-content">
+                            <ul class="program-features">
+                                <li><i class="fas fa-check-circle"></i> Neural Networks</li>
+                                <li><i class="fas fa-check-circle"></i> Computer Vision</li>
+                                <li><i class="fas fa-check-circle"></i> Natural Language Processing</li>
+                                <li><i class="fas fa-check-circle"></i> Robotics & Automation</li>
+                            </ul>
+                            <div class="program-footer">
+                                <span class="program-duration"><i class="far fa-clock"></i> 4 Years</span>
+                                <a href="#" class="btn btn-outline">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats" id="statsSection">
+            <div class="container">
+                <div class="stats-grid">
+                    <!-- Stat Item 1 -->
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-user-graduate"></i></div>
+                        <div class="stat-number" data-count="3500">0</div>
+                        <div class="stat-label">Students</div>
+                    </div>
+                    <!-- Stat Item 2 -->
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                        <div class="stat-number" data-count="120">0</div>
+                        <div class="stat-label">Faculty Members</div>
+                    </div>
+                    <!-- Stat Item 3 -->
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-flask"></i></div>
+                        <div class="stat-number" data-count="15">0</div>
+                        <div class="stat-label">Research Labs</div>
+                    </div>
+                    <!-- Stat Item 4 -->
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
+                        <div class="stat-number" data-count="92">0</div>
+                        <div class="stat-label">Employment Rate %</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Events Section -->
+        <section class="tech-events" id="eventsSection">
+            <div class="container">
+                <h2 class="section-title">Upcoming Events <span class="tag">// Calendar</span></h2>
+                <div class="events-grid">
+                    <!-- Event Card 1 -->
+                    <div class="event-card">
+                        <div class="event-date">
+                            <span class="day">15</span>
+                            <span class="month">OCT</span>
+                        </div>
+                        <div class="event-content">
+                            <h3>Hackathon 2025</h3>
+                            <p class="event-meta"><i class="fas fa-map-marker-alt"></i> Main Campus, Lab 4</p>
+                            <p>48-hour coding challenge with prizes and recruitment opportunities from top tech
+                                companies.</p>
+                            <a href="#" class="btn btn-outline">Register</a>
+                        </div>
+                    </div>
+                    <!-- Event Card 2 -->
+                    <div class="event-card">
+                        <div class="event-date">
+                            <span class="day">22</span>
+                            <span class="month">OCT</span>
+                        </div>
+                        <div class="event-content">
+                            <h3>AI Workshop Series</h3>
+                            <p class="event-meta"><i class="fas fa-map-marker-alt"></i> Virtual & CS Building</p>
+                            <p>Hands-on workshops covering machine learning, neural networks, and practical AI
+                                applications.</p>
+                            <a href="#" class="btn btn-outline">Register</a>
+                        </div>
+                    </div>
+                    <!-- Event Card 3 -->
+                    <div class="event-card">
+                        <div class="event-date">
+                            <span class="day">05</span>
+                            <span class="month">NOV</span>
+                        </div>
+                        <div class="event-content">
+                            <h3>Tech Career Fair</h3>
+                            <p class="event-meta"><i class="fas fa-map-marker-alt"></i> Student Center</p>
+                            <p>Connect with industry recruiters from leading tech companies seeking CS and DS graduates.
+                            </p>
+                            <a href="#" class="btn btn-outline">Register</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Section -->
+        <section class="cta" id="ctaSection">
+            <div class="container">
+                <!-- Terminal-style window -->
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons">
+                            <span class="terminal-button close"></span>
+                            <span class="terminal-button minimize"></span>
+                            <span class="terminal-button maximize"></span>
+                        </div>
+                        <div class="terminal-title">terminal</div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="line"><span class="prompt">fcds@tech:~$</span> start_your_journey.sh</div>
+                        <div class="line">Launching application process...</div>
+                        <div class="line">Preparing for your tech future...</div>
+                        <div class="line">Ready to begin? [Y/n] <span class="cursor">_</span></div>
+                    </div>
+                </div>
+                <!-- CTA Content -->
+                <div class="cta-content">
+                    <h2>Ready to Code Your Future?</h2>
+                    <p>Join the Faculty of Computer and Data Science and transform your passion for technology into a
+                        successful career.</p>
+                    <a href="#" class="btn btn-primary btn-large">Apply Now <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer Section -->
+        <footer id="footerSection">
+            <div class="footer-container">
+                <div class="footer-grid">
+                    <!-- Footer Column 1: Quick Links -->
+                    <div class="footer-col">
+                        <h3>Quick Links</h3>
+                        <ul>
+                            <li><a href="#"><i class="fas fa-angle-right"></i> Programs</a></li>
+                            <li><a href="#"><i class="fas fa-angle-right"></i> Admissions</a></li>
+                            <li><a href="#"><i class="fas fa-angle-right"></i> Student Life</a></li>
+                            <li><a href="#"><i class="fas fa-angle-right"></i> Research</a></li>
+                        </ul>
+                    </div>
+                    <!-- Footer Column 2: Resources -->
+                    <div class="footer-col">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="#"><i class="fas fa-angle-right"></i> Computer Labs</a></li>
+                            <li><a href="#"><i class="fas fa-angle-right"></i> Academic Calendar</a></li>
+                            <li><a href="#"><i class="fas fa-angle-right"></i> Student Portal</a></li>
+                            <li><a href="#"><i class="fas fa-angle-right"></i> Career Services</a></li>
+                        </ul>
+                    </div>
+                    <!-- Footer Column 3: Social Media -->
+                    <div class="footer-col">
+                        <h3>Connect With Us</h3>
+                        <div class="social-icons">
+                            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                    <!-- Footer Column 4: Contact Info -->
+                    <div class="footer-col">
+                        <h3>Contact</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Faculty of Computer and Data Science Building, Campus
+                        </p>
+                        <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                        <p><i class="fas fa-envelope"></i> info@fcds.edu</p>
+                    </div>
+                </div>
+                <!-- Footer Bottom -->
+                <div class="footer-bottom">
+                    <p>&copy; 2025 Faculty of Computer and Data Science. All rights reserved.</p>
+                    <div class="footer-tech-tag">&lt;/&gt; with ❤️ by FCDS</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <!-- Main JavaScript file -->
+    <script src="assets/js/home-script.js"></script>
+</body>
+
+</html>

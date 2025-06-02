@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGPA Calculator - FCDS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        success: {
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            700: '#15803d',
+                        },
+                        warning: {
+                            100: '#fef9c3',
+                            500: '#eab308',
+                            700: '#a16207',
+                        },
+                        danger: {
+                            100: '#fee2e2',
+                            500: '#ef4444',
+                            700: '#b91c1c',
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        .sidebar-transition {
+            transition: width 0.3s ease;
+        }
+
+        .sidebar-collapsed {
+            width: 4rem !important;
+        }
+
+        .sidebar-collapsed .sidebar-content,
+        .sidebar-collapsed .sidebar-label {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar-content,
+        .sidebar-label {
+            transition: opacity 0.2s;
+        }
+
+        .sidebar-collapsed .sidebar-nav-icon {
+            margin-right: 0 !important;
+            justify-content: center;
+        }
+
+        .sidebar-collapsed .sidebar-nav-label {
+            display: none;
+        }
+
+        .glass-effect {
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s ease;
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .typing-indicator {
+            animation: typing 1.5s infinite;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .header-fixed-height {
+            height: 72px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white antialiased min-h-screen flex flex-col">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="bg-white shadow-lg sidebar-transition w-64 fixed h-full z-40 flex flex-col">
+        <div class="p-6 border-b border-gray-200 sidebar-content">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-primary-900 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-graduation-cap text-white"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-gray-800">FCDS</h2>
+                    <p class="text-xs text-gray-500" id="userRole">Student</p>
+                </div>
+            </div>
+        </div>
+        <nav class="mt-6 flex-1" id="sidebarNav">
+            <!-- Dynamic navigation will be inserted here -->
+        </nav>
+    </aside>
+    <!-- Top Navbar -->
+    <header id="mainHeader"
+        class="bg-white shadow-sm border-b border-gray-200 px-6 py-4 fixed left-0 right-0 top-0 z-30 ml-64 transition-all duration-300 flex items-center justify-between header-fixed-height">
+        <div class="flex items-center space-x-4">
+            <button id="sidebarToggle"
+                class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                aria-label="Toggle sidebar" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="text-2xl font-bold text-gray-800" id="pageTitle">CGPA Calculator</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+            <!-- Search -->
+            <div class="relative hidden md:block">
+                <input type="text" placeholder="Search..."
+                    class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 bg-gray-100 text-gray-800"
+                    aria-label="Search">
+                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+            <!-- Notifications -->
+            <button class="relative p-2 text-gray-500 hover:bg-gray-100 rounded-lg" aria-label="Notifications">
+                <i class="fas fa-bell"></i>
+                <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+            <!-- User Menu -->
+            <div class="relative">
+                <button id="userMenuToggle"
+                    class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 focus:outline-none"
+                    onclick="toggleUserMenu()">
+                    <div class="w-8 h-8 bg-primary-900 rounded-full flex items-center justify-center">
+                        <span class="text-white text-sm font-medium" id="userInitials">SW</span>
+                    </div>
+                    <span class="hidden md:block text-sm font-medium text-gray-700" id="userName">Sophia Wilson</span>
+                    <i class="fas fa-chevron-down text-xs"></i>
+                </button>
+                <div id="userMenu"
+                    class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden">
+                    <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                    <hr class="border-gray-200">
+                    <button id="logoutBtn"
+                        class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                        onclick="handleLogout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Main Content -->
+    <main class="p-6 ml-64 pt-24 transition-all duration-300" id="mainContentWrapper">
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold dark:text-black mb-2">CGPA Calculator</h1>
+            <p class="text-gray-600 dark:text-black-400">Calculate your Cumulative Grade Point Average</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- CGPA Calculator Form -->
+            <div class="lg:col-span-2">
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Course Grades</h2>
+                        <div class="flex space-x-2">
+                            <button id="add-course-btn"
+                                class="px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-white rounded-md text-sm font-medium flex items-center"
+                                title="Add a new course">
+                                <i class="fas fa-plus mr-2"></i> Add Course
+                            </button>
+                            <button id="reset-form-btn"
+                                class="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-md text-sm font-medium"
+                                title="Reset form">
+                                <i class="fas fa-redo-alt mr-2"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <form id="cgpa-form" class="space-y-4">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-gray-700">
+                                    <tr>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                            Course Code
+                                        </th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                            Course Name
+                                        </th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                            Credits
+                                        </th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                            Grade
+                                        </th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="course-list"
+                                    class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                    <!-- Course rows will be added here dynamically -->
+                                    <tr class="course-row">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="text" placeholder="e.g. CS101"
+                                                class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="text" placeholder="Course Name"
+                                                class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <select
+                                                class="credit-select rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                                                aria-label="Course credits" title="Select number of credits">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4" selected>4</option>
+                                                <option value="5">5</option>
+                                            </select>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <select
+                                                class="grade-select rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                                                aria-label="Course grade" title="Select grade received">
+                                                <option value="4.0">A (4.0)</option>
+                                                <option value="3.7">A- (3.7)</option>
+                                                <option value="3.3">B+ (3.3)</option>
+                                                <option value="3.0">B (3.0)</option>
+                                                <option value="2.7">B- (2.7)</option>
+                                                <option value="2.3">C+ (2.3)</option>
+                                                <option value="2.0">C (2.0)</option>
+                                                <option value="1.7">C- (1.7)</option>
+                                                <option value="1.3">D+ (1.3)</option>
+                                                <option value="1.0">D (1.0)</option>
+                                                <option value="0.0">F (0.0)</option>
+                                            </select>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right">
+                                            <button type="button"
+                                                class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 remove-course"
+                                                title="Remove course">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="flex justify-center mt-6">
+                            <button type="button" id="calculate-btn"
+                                class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md text-sm font-medium flex items-center"
+                                title="Calculate CGPA">
+                                <i class="fas fa-calculator mr-2"></i> Calculate CGPA
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- CGPA Results -->
+            <div class="lg:col-span-1">
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
+                    <div class="p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Results</h2>
+
+                        <div class="text-center p-4 rounded-lg bg-gray-50 dark:bg-gray-700 mb-6">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Your CGPA</p>
+                            <p class="text-4xl font-bold text-primary-600 dark:text-primary-400" id="cgpa-result">0.00
+                            </p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Total Credits</span>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white"
+                                    id="total-credits">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Total Courses</span>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white"
+                                    id="total-courses">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Honors Status</span>
+                                <span class="text-sm font-medium" id="honors-status">-</span>
+                            </div>
+                        </div>
+
+                        <!-- CGPA Chart -->
+                        <div class="mt-6">
+                            <h3
+                                class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
+                                CGPA Breakdown</h3>
+                            <div id="cgpa-chart" class="h-60"></div>
+                        </div>
+
+                        <!-- Share/Export Options -->
+                        <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                            <div class="flex justify-between">
+                                <button
+                                    class="text-sm text-primary-600 dark:text-primary-400 hover:underline flex items-center"
+                                    title="Save results">
+                                    <i class="fas fa-save mr-1"></i> Save
+                                </button>
+                                <button
+                                    class="text-sm text-primary-600 dark:text-primary-400 hover:underline flex items-center"
+                                    title="Print results">
+                                    <i class="fas fa-print mr-1"></i> Print
+                                </button>
+                                <button
+                                    class="text-sm text-primary-600 dark:text-primary-400 hover:underline flex items-center"
+                                    title="Export as PDF">
+                                    <i class="fas fa-file-pdf mr-1"></i> Export
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GPA Scale Reference -->
+                <div
+                    class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
+                    <div class="p-6">
+                        <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-3">GPA Scale Reference</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-gray-700">
+                                    <tr>
+                                        <th scope="col"
+                                            class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
+                                            Grade</th>
+                                        <th scope="col"
+                                            class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
+                                            Points</th>
+                                        <th scope="col"
+                                            class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
+                                            Range</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                    <tr>
+                                        <td class="px-3 py-2 whitespace-nowrap text-xs">A</td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-xs">4.0</td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-xs">90-100</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3 py-2 whitespace-nowrap text-xs">A-</td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-xs">3.7</td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-xs">85-89</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3 py-2 whitespace-nowrap text-xs">B+</td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-xs">3.3</td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-xs">80-84</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3 py-2 whitespace-nowrap text-xs">B</td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-xs">3.0</td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-xs">75-79</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-3 py-2 whitespace-nowrap text-xs">C+</td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-xs">2.3</td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-xs">70-74</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 py-4 mt-auto">
+        <div class="container mx-auto text-center">
+            <p class="text-sm">&copy; 2025 FCDS. All rights reserved.</p>
+            <p class="text-xs">Designed with <i class="fas fa-heart text-red-500"></i> by FCDS Team</p>
+        </div>
+    </footer>
+</body>
+
+<!-- Page Specific Script -->
+<script>
+    // Global state management
+    const AppState = {
+        currentUser: null,
+        currentRole: null,
+        sidebarCollapsed: true,
+    };
+
+    // Role-based navigation configurations
+    const NavigationConfig = {
+        'student': [
+            { icon: 'fas fa-tachometer-alt', label: 'Dashboard', id: 'dashboard', href: 'student-db.html' },
+            { icon: 'fas fa-calendar-check', label: 'Attendance', id: 'attendance', href: 'attendance.html' },
+            { icon: 'fas fa-book', label: 'Courses', id: 'courses', href: 'courses.html' },
+            { icon: 'fas fa-credit-card', label: 'Fees & Payments', id: 'fees', href: 'fees-payments.html' },
+            { icon: 'fas fa-graduation-cap', label: 'Grades', id: 'grades', href: 'grades.html' },
+            { icon: 'fas fa-calculator', label: 'CGPA Calculator', id: 'cgpa', href: 'cgpa-calculator.html' },
+            { icon: 'fas fa-book-open', label: 'Course Materials', id: 'materials', href: 'course-materials.html' },
+            { icon: 'fas fa-calendar', label: 'Schedule', id: 'schedule', href: 'class-schedule.html' },
+            { icon: 'fas fa-clipboard-list', label: 'Assignments', id: 'assignments', href: 'assignments.html' },
+            { icon: 'fas fa-certificate', label: 'Certificates', id: 'certificates', href: 'certificates.html' },
+            { icon: 'fas fa-comments', label: 'Grievance Form', id: 'chat', href: 'grievance-form.html' },
+            { icon: 'fas fa-chart-line', label: 'Progress', id: 'progress', href: 'progress.html' },
+            { icon: 'fas fa-user', label: 'Profile', id: 'profile', href: 'profile.html' }
+        ]
+    };
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function () {
+        AppState.currentRole = 'student'; // Ensure role is set before loading navigation
+        loadNavigation();
+        // Apply sidebar collapsed state on page load
+        if (AppState.sidebarCollapsed) {
+            const sidebar = document.getElementById('sidebar');
+            const mainContentWrapper = document.getElementById('mainContentWrapper');
+            const header = document.getElementById('mainHeader');
+
+            sidebar.classList.add('sidebar-collapsed');
+            sidebar.classList.remove('w-64');
+            sidebar.classList.add('w-16');
+            mainContentWrapper.classList.remove('ml-64');
+            mainContentWrapper.classList.add('ml-16');
+            header && header.classList.remove('ml-64');
+            header && header.classList.add('ml-16');
+        }
+        initializeApp && initializeApp(); // Call initializeApp if defined
+    });
+    function loadNavigation() {
+        const nav = NavigationConfig[AppState.currentRole];
+        const navContainer = document.getElementById('sidebarNav');
+        navContainer.innerHTML = nav.map(item => `
+                <a href="${item.href}" class="nav-item flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 transition-colors ${item.id === 'cgpa' ? 'bg-blue-50 text-blue-600 border-r-2 border-blue-600' : ''}" title="${item.label}">
+                    <span class="sidebar-nav-icon flex items-center justify-center w-6"><i class="${item.icon}"></i></span>
+                    <span class="sidebar-nav-label ml-3">${item.label}</span>
+                </a>
+            `).join('');
+    }
+    function loadPage(pageId) {
+        // Update active nav
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('bg-blue-50', 'text-blue-600', 'border-r-2', 'border-blue-600');
+        });
+        event.target.closest('.nav-item').classList.add('bg-blue-50', 'text-blue-600', 'border-r-2', 'border-blue-600');
+
+        // Update page title
+        const navItem = NavigationConfig[AppState.currentRole].find(item => item.id === pageId);
+        document.getElementById('pageTitle').textContent = navItem.label;
+
+        // Load content
+        loadDashboardContent(pageId);
+    }
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const mainContentWrapper = document.getElementById('mainContentWrapper');
+        const header = document.getElementById('mainHeader');
+        AppState.sidebarCollapsed = !AppState.sidebarCollapsed;
+
+        if (AppState.sidebarCollapsed) {
+            sidebar.classList.add('sidebar-collapsed');
+            sidebar.classList.remove('w-64');
+            sidebar.classList.add('w-16');
+            mainContentWrapper.classList.remove('ml-64');
+            mainContentWrapper.classList.add('ml-16');
+            header.classList.remove('ml-64');
+            header.classList.add('ml-16');
+        } else {
+            sidebar.classList.remove('sidebar-collapsed');
+            sidebar.classList.add('w-64');
+            sidebar.classList.remove('w-16');
+            mainContentWrapper.classList.remove('ml-16');
+            mainContentWrapper.classList.add('ml-64');
+            header.classList.remove('ml-16');
+            header.classList.add('ml-64');
+        }
+    }
+
+    function toggleUserMenu() {
+        const menu = document.getElementById('userMenu');
+        menu.classList.toggle('hidden');
+    }
+
+    function handleLogout() {
+        // Clear user state
+        AppState.currentUser = null;
+        AppState.currentRole = null;
+
+        // Redirect to login page
+        window.location.href = '../login.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // Initialize CGPA Chart
+        const cgpaChartOptions = {
+            series: [0],
+            chart: {
+                height: 200,
+                type: 'radialBar',
+                toolbar: {
+                    show: false
+                }
+            },
+            plotOptions: {
+                radialBar: {
+                    startAngle: -135,
+                    endAngle: 135,
+                    hollow: {
+                        margin: 0,
+                        size: '70%',
+                        background: '#fff',
+                        image: undefined,
+                        imageOffsetX: 0,
+                        imageOffsetY: 0,
+                        position: 'front',
+                        dropShadow: {
+                            enabled: true,
+                            top: 3,
+                            left: 0,
+                            blur: 4,
+                            opacity: 0.24
+                        }
+                    },
+                    track: {
+                        background: '#fff',
+                        strokeWidth: '67%',
+                        margin: 0,
+                        dropShadow: {
+                            enabled: true,
+                            top: -3,
+                            left: 0,
+                            blur: 4,
+                            opacity: 0.35
+                        }
+                    },
+                    dataLabels: {
+                        show: true,
+                        name: {
+                            offsetY: -10,
+                            show: true,
+                            color: '#888',
+                            fontSize: '17px'
+                        },
+                        value: {
+                            formatter: function (val) {
+                                return parseFloat(val / 25).toFixed(2);
+                            },
+                            color: '#111',
+                            fontSize: '36px',
+                            show: true,
+                        }
+                    }
+                }
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'dark',
+                    type: 'horizontal',
+                    shadeIntensity: 0.5,
+                    gradientToColors: ['#ABE5A1'],
+                    inverseColors: true,
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 100]
+                }
+            },
+            stroke: {
+                lineCap: 'round'
+            },
+            labels: ['CGPA (out of 4.0)'],
+        };
+
+        const cgpaChart = new ApexCharts(document.querySelector("#cgpa-chart"), cgpaChartOptions);
+        cgpaChart.render();
+
+        // CGPA Calculator Logic
+        const addCourseBtn = document.getElementById('add-course-btn');
+        const resetFormBtn = document.getElementById('reset-form-btn');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const courseList = document.getElementById('course-list');
+        const cgpaResult = document.getElementById('cgpa-result');
+        const totalCredits = document.getElementById('total-credits');
+        const totalCourses = document.getElementById('total-courses');
+        const honorsStatus = document.getElementById('honors-status');
+
+        // Add new course row
+        addCourseBtn.addEventListener('click', function () {
+            const newRow = document.querySelector('.course-row').cloneNode(true);
+
+            // Clear inputs in the new row
+            newRow.querySelectorAll('input').forEach(input => {
+                input.value = '';
+            });
+
+            // Reset selects to default
+            newRow.querySelector('.credit-select').value = '4';
+            newRow.querySelector('.grade-select').value = '4.0';
+
+            // Add event listener to remove button
+            newRow.querySelector('.remove-course').addEventListener('click', function () {
+                this.closest('tr').remove();
+                updateTotalCourses();
+            });
+
+            courseList.appendChild(newRow);
+            updateTotalCourses();
+        });
+
+        // Add event listeners to initial remove buttons
+        document.querySelectorAll('.remove-course').forEach(button => {
+            button.addEventListener('click', function () {
+                if (document.querySelectorAll('.course-row').length > 1) {
+                    this.closest('tr').remove();
+                    updateTotalCourses();
+                } else {
+                    alert('You must have at least one course!');
+                }
+            });
+        });
+
+        // Reset form
+        resetFormBtn.addEventListener('click', function () {
+            // Keep only one row
+            while (courseList.children.length > 1) {
+                courseList.removeChild(courseList.lastChild);
+            }
+
+            // Reset first row
+            const firstRow = courseList.querySelector('.course-row');
+            firstRow.querySelectorAll('input').forEach(input => {
+                input.value = '';
+            });
+            firstRow.querySelector('.credit-select').value = '4';
+            firstRow.querySelector('.grade-select').value = '4.0';
+
+            // Reset results
+            cgpaResult.textContent = '0.00';
+            totalCredits.textContent = '0';
+            totalCourses.textContent = '0';
+            honorsStatus.textContent = '-';
+            honorsStatus.className = 'text-sm font-medium';
+
+            // Update chart
+            cgpaChart.updateSeries([0]);
+        });
+
+        // Calculate CGPA
+        calculateBtn.addEventListener('click', function () {
+            let totalPoints = 0;
+            let credits = 0;
+            let courses = 0;
+
+            document.querySelectorAll('.course-row').forEach(row => {
+                const creditValue = parseFloat(row.querySelector('.credit-select').value);
+                const gradeValue = parseFloat(row.querySelector('.grade-select').value);
+
+                totalPoints += creditValue * gradeValue;
+                credits += creditValue;
+                courses++;
+            });
+
+            const cgpa = credits > 0 ? totalPoints / credits : 0;
+
+            // Update UI
+            cgpaResult.textContent = cgpa.toFixed(2);
+            totalCredits.textContent = credits;
+            totalCourses.textContent = courses;
+
+            // Update honors status
+            let honorText = '';
+            let honorClass = 'text-sm font-medium ';
+
+            if (cgpa >= 3.9) {
+                honorText = 'Summa Cum Laude';
+                honorClass += 'text-purple-600 dark:text-purple-400';
+            } else if (cgpa >= 3.7) {
+                honorText = 'Magna Cum Laude';
+                honorClass += 'text-primary-600 dark:text-primary-400';
+            } else if (cgpa >= 3.5) {
+                honorText = 'Cum Laude';
+                honorClass += 'text-success-600 dark:text-success-400';
+            } else {
+                honorText = 'Regular Standing';
+                honorClass += 'text-gray-600 dark:text-gray-400';
+            }
+
+            honorsStatus.textContent = honorText;
+            honorsStatus.className = honorClass;
+
+            // Update chart
+            cgpaChart.updateSeries([cgpa * 25]); // Convert to percentage of 100
+        });
+
+        // Helper function to update total courses count
+        function updateTotalCourses() {
+            totalCourses.textContent = document.querySelectorAll('.course-row').length;
+        }
+
+        // Initialize total courses count
+        updateTotalCourses();
+    });
+</script>
+
+</html>

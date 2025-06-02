@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard - FCDS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="stylesheet" href="../../css/tailwind-custom.css">
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white antialiased min-h-screen flex flex-col">
+
+
+    <!-- Main Content -->
+    <div class="main-content p-4 sm:p-6 lg:p-8 ml-0 md:ml-64 transition-all duration-300 mt-16">
+        <!-- Welcome Section -->
+        <div class="dashboard-header mb-6">
+            <h1 class="dashboard-title text-2xl font-bold mb-2">Welcome, <span id="doctor-name">Dr. John Smith</span>
+            </h1>
+            <p class="dashboard-subtitle">Computer Science Department</p>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <!-- Total Students -->
+            <div class="dashboard-card">
+                <div class="stat-card">
+                    <div class="stat-icon bg-primary-soft text-primary">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="stat-content">
+                        <p class="stat-label">Total Students</p>
+                        <p class="stat-value">124</p>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up mr-1"></i> 5.3% from last semester
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Courses -->
+            <div class="dashboard-card">
+                <div class="stat-card">
+                    <div class="stat-icon bg-secondary-soft text-secondary">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="stat-content">
+                        <p class="stat-label">Active Courses</p>
+                        <p class="stat-value">8</p>
+                        <div class="stat-change">
+                            2 new courses this semester
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Average Attendance -->
+            <div class="dashboard-card">
+                <div class="stat-card">
+                    <div class="stat-icon bg-success-soft text-success">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <div class="stat-content">
+                        <p class="stat-label">Avg. Attendance</p>
+                        <p class="stat-value">92%</p>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up mr-1"></i> 3.2% from last month
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Exams -->
+            <div class="dashboard-card">
+                <div class="stat-card">
+                    <div class="stat-icon bg-warning-soft text-warning">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <p class="stat-label">Upcoming Exams</p>
+                        <p class="stat-value">4</p>
+                        <div class="stat-change">
+                            Next exam in 3 days
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts and Tables Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Attendance Chart -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h2 class="card-title">Attendance Overview</h2>
+                </div>
+                <div class="card-body">
+                    <div id="attendance-chart" class="chart-container"></div>
+                </div>
+            </div>
+
+            <!-- Performance Chart -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h2 class="card-title">Student Performance</h2>
+                </div>
+                <div class="card-body">
+                    <div id="performance-chart" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity and Tasks -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Recent Activity -->
+            <div class="dashboard-card lg:col-span-2">
+                <div class="card-header">
+                    <h2 class="card-title">Recent Activity</h2>
+                    <a href="#" class="text-primary hover:text-primary-dark text-sm font-medium">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="space-y-4">
+                        <div class="activity-item">
+                            <div class="activity-icon bg-primary-soft text-primary">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-title">New assignment submission</p>
+                                <p class="activity-subtitle">Michael Brown submitted the CS101 assignment</p>
+                                <p class="activity-time">2 hours ago</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon bg-success-soft text-success">
+                                <i class="fas fa-clipboard-check"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-title">Attendance marked</p>
+                                <p class="activity-subtitle">CS101 attendance recorded - 95% present</p>
+                                <p class="activity-time">5 hours ago</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon bg-warning-soft text-warning">
+                                <i class="fas fa-bullhorn"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-title">New announcement</p>
+                                <p class="activity-subtitle">You published "Semester Registration" announcement</p>
+                                <p class="activity-time">1 day ago</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon bg-danger-soft text-danger">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p class="activity-title">Low attendance alert</p>
+                                <p class="activity-subtitle">3 students have attendance below 75% in CS101</p>
+                                <p class="activity-time">2 days ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h2 class="card-title">My Tasks</h2>
+                    <a href="#" class="text-primary hover:text-primary-dark text-sm font-medium">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="space-y-3">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="task-1" aria-label="Review Curriculum task"
+                                class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                            <div class="ml-3">
+                                <label for="task-1" class="text-sm font-medium">Review Curriculum</label>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Due Jul 10</p>
+                            </div>
+                            <span class="ml-auto badge badge-danger">
+                                High
+                            </span>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="task-2" aria-label="Finalize Exam Schedule task"
+                                class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                            <div class="ml-3">
+                                <label for="task-2" class="text-sm font-medium">Finalize Exam Schedule</label>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Due Jul 5</p>
+                            </div>
+                            <span class="ml-auto badge badge-warning">
+                                Medium
+                            </span>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="task-3" aria-label="Grade Assignments task"
+                                class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                            <div class="ml-3">
+                                <label for="task-3" class="text-sm font-medium">Grade Assignments</label>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Due Jul 3</p>
+                            </div>
+                            <span class="ml-auto badge badge-success">
+                                Low
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button id="create-task" class="btn btn-primary w-full flex items-center justify-center">
+                            <i class="fas fa-plus mr-2"></i> Add New Task
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Doctor Dashboard Specific Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+
+            // Initialize charts
+            initializeCharts();
+        });
+
+        function initializeCharts() {
+            // Attendance Chart
+            const attendanceOptions = {
+                chart: {
+                    type: 'line',
+                    height: 300,
+                    toolbar: {
+                        show: false
+                    }
+                },
+                series: [{
+                    name: 'Attendance Rate',
+                    data: [88, 92, 90, 94, 96, 92, 90]
+                }],
+                xaxis: {
+                    categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7']
+                },
+                colors: ['#2563eb'],
+                stroke: {
+                    curve: 'smooth',
+                    width: 3
+                },
+                markers: {
+                    size: 5
+                },
+                grid: {
+                    borderColor: '#e2e8f0'
+                }
+            };
+
+            const attendanceChart = new ApexCharts(document.querySelector('#attendance-chart'), attendanceOptions);
+            attendanceChart.render();
+
+            // Performance Chart
+            const performanceOptions = {
+                chart: {
+                    type: 'bar',
+                    height: 300,
+                    toolbar: {
+                        show: false
+                    }
+                },
+                series: [{
+                    name: 'Average Score',
+                    data: [82, 75, 88, 90, 76]
+                }],
+                xaxis: {
+                    categories: ['Assignment 1', 'Assignment 2', 'Quiz 1', 'Midterm', 'Project']
+                },
+                colors: ['#8b5cf6'],
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        columnWidth: '50%'
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                grid: {
+                    borderColor: '#e2e8f0'
+                }
+            };
+
+            const performanceChart = new ApexCharts(document.querySelector('#performance-chart'), performanceOptions);
+            performanceChart.render();
+        }
+    </script>
+</body>
+
+</html>

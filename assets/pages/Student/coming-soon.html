@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon - FCDS</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        success: {
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            700: '#15803d',
+                        },
+                        warning: {
+                            100: '#fef9c3',
+                            500: '#eab308',
+                            700: '#a16207',
+                        },
+                        danger: {
+                            100: '#fee2e2',
+                            500: '#ef4444',
+                            700: '#b91c1c',
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .sidebar-transition {
+            transition: width 0.3s ease;
+        }
+
+        .sidebar-collapsed {
+            width: 4rem !important;
+        }
+
+        .sidebar-collapsed .sidebar-content,
+        .sidebar-collapsed .sidebar-label {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar-content,
+        .sidebar-label {
+            transition: opacity 0.2s;
+        }
+
+        .sidebar-collapsed .sidebar-nav-icon {
+            margin-right: 0 !important;
+            justify-content: center;
+        }
+
+        .sidebar-collapsed .sidebar-nav-label {
+            display: none;
+        }
+
+        .glass-effect {
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s ease;
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .typing-indicator {
+            animation: typing 1.5s infinite;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .header-fixed-height {
+            height: 72px;
+        }
+
+        .icon-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: var(--color-primary);
+            font-size: 3rem;
+            position: relative;
+        }
+
+        .icon-circle::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            border: 2px dashed #0ea5e9;
+            animation: spin 30s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .code-snippet {
+            background-color: #1e293b;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
+            text-align: left;
+            font-family: 'JetBrains Mono', monospace;
+            color: #e2e8f0;
+            position: relative;
+            overflow: hidden;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .code-snippet-header {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .red {
+            background-color: #ef4444;
+        }
+
+        .yellow {
+            background-color: #f59e0b;
+        }
+
+        .green {
+            background-color: #10b981;
+        }
+
+        .code-line {
+            line-height: 1.6;
+            font-size: 0.875rem;
+        }
+
+        .comment {
+            color: #94a3b8;
+        }
+
+        .keyword {
+            color: #93c5fd;
+        }
+
+        .string {
+            color: #86efac;
+        }
+
+        .function {
+            color: #c4b5fd;
+        }
+
+        .variable {
+            color: #fca5a5;
+        }
+
+        .heart-icon {
+            color: #ef4444;
+            animation: pulse 1.5s ease infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white antialiased min-h-screen flex flex-col">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="bg-white shadow-lg sidebar-transition w-64 fixed h-full z-40 flex flex-col">
+        <div class="p-6 border-b border-gray-200 sidebar-content">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-primary-900 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-graduation-cap text-white"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-gray-800">FCDS</h2>
+                    <p class="text-xs text-gray-500" id="userRole">Student</p>
+                </div>
+            </div>
+        </div>
+        <nav class="mt-6 flex-1" id="sidebarNav">
+            <!-- Dynamic navigation will be inserted here -->
+        </nav>
+    </aside>
+
+    <!-- Top Navbar -->
+    <header id="mainHeader"
+        class="bg-white shadow-sm border-b border-gray-200 px-6 py-4 fixed left-0 right-0 top-0 z-30 ml-64 transition-all duration-300 flex items-center justify-between header-fixed-height">
+        <div class="flex items-center space-x-4">
+            <button id="sidebarToggle"
+                class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                aria-label="Toggle sidebar" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="text-2xl font-bold text-gray-800" id="pageTitle">Coming Soon</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+            <!-- Search -->
+            <div class="relative hidden md:block">
+                <input type="text" placeholder="Search..."
+                    class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 bg-gray-100 text-gray-800"
+                    aria-label="Search">
+                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+            <!-- Notifications -->
+            <button class="relative p-2 text-gray-500 hover:bg-gray-100 rounded-lg" aria-label="Notifications">
+                <i class="fas fa-bell"></i>
+                <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+            <!-- User Menu -->
+            <div class="relative">
+                <button id="userMenuToggle"
+                    class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 focus:outline-none"
+                    onclick="toggleUserMenu()">
+                    <div class="w-8 h-8 bg-primary-900 rounded-full flex items-center justify-center">
+                        <span class="text-white text-sm font-medium" id="userInitials">SW</span>
+                    </div>
+                    <span class="hidden md:block text-sm font-medium text-gray-700" id="userName">Sophia Wilson</span>
+                    <i class="fas fa-chevron-down text-xs"></i>
+                </button>
+                <div id="userMenu"
+                    class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden">
+                    <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                    <hr class="border-gray-200">
+                    <button id="logoutBtn"
+                        class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                        onclick="handleLogout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="p-6 ml-64 pt-24 transition-all duration-300" id="mainContentWrapper">
+        <div class="min-h-[calc(100vh-8rem)] flex items-center justify-center">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden max-w-4xl w-full p-8 relative">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 opacity-50"></div>
+                <div class="relative z-10">
+                    <!-- Animated Icon -->
+                    <div class="text-center mb-8">
+                        <div class="icon-circle mx-auto">
+                            <i class="fas fa-code text-4xl text-primary-600"></i>
+                        </div>
+                    </div>
+
+                    <!-- Title and Description -->
+                    <h2
+                        class="text-4xl font-bold text-center mb-4 bg-gradient-to-r from-primary-600 to-indigo-600 bg-clip-text text-transparent">
+                        Coming Soon
+                    </h2>
+                    <p class="text-lg text-gray-600 text-center mb-8 max-w-2xl mx-auto">
+                        We're working hard to bring you this feature. Stay tuned for something amazing from the FCDS
+                        team!
+                    </p>
+
+                    <!-- Countdown Timer -->
+                    <div class="grid grid-cols-4 gap-4 max-w-2xl mx-auto mb-8">
+                        <div class="bg-gray-50 rounded-lg shadow-sm p-4 text-center">
+                            <div class="text-3xl font-bold text-primary-600 font-mono" id="days">00</div>
+                            <div class="text-sm text-gray-500 uppercase tracking-wider">Days</div>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg shadow-sm p-4 text-center">
+                            <div class="text-3xl font-bold text-primary-600 font-mono" id="hours">00</div>
+                            <div class="text-sm text-gray-500 uppercase tracking-wider">Hours</div>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg shadow-sm p-4 text-center">
+                            <div class="text-3xl font-bold text-primary-600 font-mono" id="minutes">00</div>
+                            <div class="text-sm text-gray-500 uppercase tracking-wider">Minutes</div>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg shadow-sm p-4 text-center">
+                            <div class="text-3xl font-bold text-primary-600 font-mono" id="seconds">00</div>
+                            <div class="text-sm text-gray-500 uppercase tracking-wider">Seconds</div>
+                        </div>
+                    </div>
+
+                    <!-- Code Snippet -->
+                    <div class="code-snippet mb-8">
+                        <div class="code-snippet-header">
+                            <div class="code-dot red"></div>
+                            <div class="code-dot yellow"></div>
+                            <div class="code-dot green"></div>
+                        </div>
+                        <div class="code-line"><span class="comment">// Feature under development</span></div>
+                        <div class="code-line"><span class="keyword">function</span> <span
+                                class="function">launchFeature</span>() {</div>
+                        <div class="code-line"> <span class="keyword">const</span> <span
+                                class="variable">progress</span> = <span class="string">'75% complete'</span>;</div>
+                        <div class="code-line"> <span class="keyword">const</span> <span class="variable">status</span>
+                            = <span class="string">'coming soon'</span>;</div>
+                        <div class="code-line"> <span class="keyword">return</span> <span
+                                class="function">notifyUsers</span>();</div>
+                        <div class="code-line">}</div>
+                    </div>
+
+                    <!-- Notification Form -->
+                    <div class="max-w-md mx-auto">
+                        <div class="flex gap-2">
+                            <input type="email" placeholder="Enter your email for updates"
+                                class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            <button
+                                class="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors">
+                                <i class="fas fa-bell mr-2"></i>Notify Me
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Global state management
+        const AppState = {
+            currentUser: null,
+            currentRole: null,
+            sidebarCollapsed: false,
+        };
+
+        // Role-based navigation configurations
+        const NavigationConfig = {
+            'student': [
+                { icon: 'fas fa-tachometer-alt', label: 'Dashboard', id: 'dashboard', href: 'student-db.html' },
+                { icon: 'fas fa-calendar-check', label: 'Attendance', id: 'attendance', href: 'attendance.html' },
+                { icon: 'fas fa-book', label: 'Courses', id: 'courses', href: 'courses.html' },
+                { icon: 'fas fa-credit-card', label: 'Fees & Payments', id: 'fees', href: 'fees-payments.html' },
+                { icon: 'fas fa-graduation-cap', label: 'Grades', id: 'grades', href: 'grades.html' },
+                { icon: 'fas fa-calculator', label: 'CGPA Calculator', id: 'cgpa', href: 'cgpa-calculator.html' },
+                { icon: 'fas fa-book-open', label: 'Course Materials', id: 'materials', href: 'course-materials.html' },
+                { icon: 'fas fa-calendar', label: 'Schedule', id: 'schedule', href: 'class-schedule.html' },
+                { icon: 'fas fa-clipboard-list', label: 'Assignments', id: 'assignments', href: 'assignments.html' },
+                { icon: 'fas fa-certificate', label: 'Certificates', id: 'certificates', href: 'certificates.html' },
+                { icon: 'fas fa-comments', label: 'Grievance Form', id: 'chat', href: 'grievance-form.html' },
+                { icon: 'fas fa-chart-line', label: 'Progress', id: 'progress', href: 'progress.html' },
+                { icon: 'fas fa-user', label: 'Profile', id: 'profile', href: 'profile.html' }
+            ]
+        };
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function () {
+            AppState.currentRole = 'student'; // Ensure role is set before loading navigation
+            loadNavigation();
+            initializeApp && initializeApp(); // Call initializeApp if defined
+        });
+        function loadNavigation() {
+            const nav = NavigationConfig[AppState.currentRole];
+            const navContainer = document.getElementById('sidebarNav');
+            navContainer.innerHTML = nav.map(item => `
+                <a href="${item.href}" class="nav-item flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 transition-colors ${item.id === '' ? 'bg-blue-50 text-blue-600 border-r-2 border-blue-600' : ''}" title="${item.label}">
+                    <span class="sidebar-nav-icon flex items-center justify-center w-6"><i class="${item.icon}"></i></span>
+                    <span class="sidebar-nav-label ml-3">${item.label}</span>
+                </a>
+            `).join('');
+        }
+        function loadPage(pageId) {
+            // Update active nav
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('bg-blue-50', 'text-blue-600', 'border-r-2', 'border-blue-600');
+            });
+            event.target.closest('.nav-item').classList.add('bg-blue-50', 'text-blue-600', 'border-r-2', 'border-blue-600');
+
+            // Update page title
+            const navItem = NavigationConfig[AppState.currentRole].find(item => item.id === pageId);
+            document.getElementById('pageTitle').textContent = navItem.label;
+
+            // Load content
+            loadDashboardContent(pageId);
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContentWrapper = document.getElementById('mainContentWrapper');
+            const header = document.getElementById('mainHeader');
+            AppState.sidebarCollapsed = !AppState.sidebarCollapsed;
+
+            if (AppState.sidebarCollapsed) {
+                sidebar.classList.add('sidebar-collapsed');
+                sidebar.classList.remove('w-64');
+                sidebar.classList.add('w-16');
+                mainContentWrapper.classList.remove('ml-64');
+                mainContentWrapper.classList.add('ml-16');
+                header.classList.remove('ml-64');
+                header.classList.add('ml-16');
+            } else {
+                sidebar.classList.remove('sidebar-collapsed');
+                sidebar.classList.add('w-64');
+                sidebar.classList.remove('w-16');
+                mainContentWrapper.classList.remove('ml-16');
+                mainContentWrapper.classList.add('ml-64');
+                header.classList.remove('ml-16');
+                header.classList.add('ml-64');
+            }
+        }
+
+        function toggleUserMenu() {
+            const menu = document.getElementById('userMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function handleLogout() {
+            AppState.currentUser = null;
+            AppState.currentRole = null;
+            showLoginScreen();
+        }
+
+        // Set the countdown date (30 days from now)
+        const countdownDate = new Date();
+        countdownDate.setDate(countdownDate.getDate() + 30);
+
+        // Update countdown every second
+        const countdown = setInterval(function () {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+
+            // Calculate days, hours, minutes, seconds
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Display the results
+            document.getElementById("days").innerHTML = days.toString().padStart(2, '0');
+            document.getElementById("hours").innerHTML = hours.toString().padStart(2, '0');
+            document.getElementById("minutes").innerHTML = minutes.toString().padStart(2, '0');
+            document.getElementById("seconds").innerHTML = seconds.toString().padStart(2, '0');
+
+            // If countdown is finished
+            if (distance < 0) {
+                clearInterval(countdown);
+                document.getElementById("countdown").innerHTML = "FEATURE LAUNCHED!";
+            }
+        }, 1000);
+
+        // Add animation to the notify button
+        const notifyBtn = document.querySelector('button:has(.fa-bell)');
+        notifyBtn.addEventListener('click', function () {
+            const input = document.querySelector('input[type="email"]');
+            const email = input.value.trim();
+
+            if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                this.innerHTML = '<i class="fas fa-check mr-2"></i>Subscribed!';
+                this.classList.add('bg-success-500', 'hover:bg-success-600');
+                input.value = '';
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-bell mr-2"></i>Notify Me';
+                    this.classList.remove('bg-success-500', 'hover:bg-success-600');
+                }, 3000);
+            } else {
+                input.focus();
+                input.style.borderColor = '#ef4444';
+                setTimeout(() => {
+                    input.style.borderColor = '';
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+
+</html>
